@@ -53,9 +53,10 @@ h1 em{font-style:normal;color:var(--em-soft)}
 .cta-row{display:flex;gap:16px;margin-top:38px}
 .hero-art{position:relative;display:flex;justify-content:center}
 .hero-art img{width:min(380px,80%);filter:drop-shadow(0 30px 60px rgba(0,0,0,.5))}
-.hero-art::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;
+.hero-art video{width:min(480px,100%);border-radius:14px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.45);mask-image:radial-gradient(ellipse 100% 100% at 50% 50%,#000 75%,transparent 100%)}
+.about .hero-art::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;
   background:radial-gradient(circle,var(--em-dim),transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%)}
-.hero-art::after{content:"KN·f3";position:absolute;right:6%;bottom:-4px;font-family:'IBM Plex Mono',monospace;
+.about .hero-art::after{content:"KN·f3";position:absolute;right:6%;bottom:-4px;font-family:'IBM Plex Mono',monospace;
   font-size:12px;letter-spacing:3px;color:var(--mut);opacity:.55}
 /* staggered reveal */
 .rv{opacity:0;transform:translateY(18px);animation:rv .7s cubic-bezier(.2,.7,.3,1) forwards}
@@ -177,7 +178,7 @@ footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
 <nav>
   <div class="wrap nav-in">
     <a class="logo" href="#top">
-      <img src="knight.png" alt="ReiterWeb">
+      <img src="knight-light.png" alt="ReiterWeb">
       <span class="wm">Reiter<i>Web</i></span>
     </a>
     <div class="navlinks">
@@ -202,13 +203,17 @@ footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
         <a class="btn ghost" href="#services">What we do</a>
       </div>
     </div>
-    <div class="hero-art rv d5"><img src="knight.png" alt=""></div>
+    <div class="hero-art rv d5">
+      <video autoplay muted loop playsinline poster="">
+        <source src="flow.mp4" type="video/mp4">
+      </video>
+    </div>
   </div>
   <div class="stats">
     <div class="wrap stats-in">
       <div class="stat"><b>115<span>+</span></b><small>projects delivered</small></div>
       <div class="stat"><b>6,000<span>+</span></b><small>engineering hours</small></div>
-      <div class="stat"><b>Top Rated <span>Plus</span></b><small>upwork · 5.0★</small></div>
+      <div class="stat"><b>&lt;24<span>h</span></b><small>response time</small></div>
       <div class="stat"><b>40<span>%</span></b><small>conversions recovered</small></div>
     </div>
   </div>
@@ -395,10 +400,10 @@ footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
     <div>
       <div class="sec-eyebrow">// WHO'S BEHIND THIS</div>
       <h2>Engineers, not tag-clickers</h2>
-      <p class="body">ReiterWeb is led by Artem R. — a tracking engineer with a software-development background, Top Rated Plus on Upwork with 115+ delivered projects and 6,000+ hours in GA4, GTM and server-side tracking. Every delivery is reviewed by a senior engineer before it reaches you.</p>
+      <p class="body">ReiterWeb is led by Artem R. — a tracking engineer with a software-development background, 115+ delivered projects and 6,000+ hours in GA4, GTM and server-side tracking. Every delivery is reviewed by a senior engineer before it reaches you.</p>
       <p class="body">We read your source code, debug the dataLayer, and build tracking that survives redesigns, plugin updates and CMS migrations — instead of breaking a month later.</p>
       <div class="about-badges">
-        <span class="badge">TOP RATED PLUS</span>
+        <span class="badge">EU-BASED · GDPR-NATIVE</span>
         <span class="badge">115+ PROJECTS</span>
         <span class="badge">6,000+ HOURS</span>
         <span class="badge">DEV BACKGROUND</span>
@@ -425,13 +430,12 @@ footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
 <footer>
   <div class="wrap foot">
     <a class="logo" href="#top">
-      <img src="knight.png" alt="">
+      <img src="knight-light.png" alt="">
       <span class="wm">Reiter<i>Web</i></span>
     </a>
     <div class="foot-links">
       <a href="#services">Services</a>
       <a href="#pricing">Pricing</a>
-      <a href="https://www.upwork.com/agencies/2077841974970017893/" target="_blank">Upwork</a>
       <a href="mailto:hello@reiterweb.com">Contact</a>
     </div>
     <div class="copy">© 2026 REITERWEB · LODZ, PL</div>
