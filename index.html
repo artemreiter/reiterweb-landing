@@ -5,295 +5,344 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ReiterWeb — Tracking & Analytics Engineering</title>
 <meta name="description" content="GA4, server-side tracking and attribution engineering for brands that spend real money on ads. We fix the data your ad budget depends on.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0B1220; --ink2:#0F172A; --panel:#111C33;
-  --em:#10B981; --em-soft:#34D399; --em-dim:rgba(16,185,129,.12);
-  --txt:#E6ECF5; --mut:#8A99B0; --line:rgba(138,153,176,.16);
-  --light-bg:#F5F7FA; --light-txt:#0F172A; --light-mut:#5B6B80;
+  --paper:#F2EFE7; --paper2:#EAE6DA; --ink:#101210; --ink-soft:#3A3D3A;
+  --em:#0E9F6E; --em-bright:#10B981; --dark:#0C0F0D; --dark2:#141816;
+  --rule:#101210;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Archivo',sans-serif;background:var(--ink);color:var(--txt);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.mono{font-family:'IBM Plex Mono',monospace}
-.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+::selection{background:var(--em);color:#fff}
+body{font-family:'Satoshi',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;z-index:99;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
+.mono{font-family:'JetBrains Mono',monospace}
 a{color:inherit;text-decoration:none}
+.wrap{max-width:1360px;margin:0 auto;padding:0 44px}
 
-/* ---------- grid background ---------- */
-.gridbg{position:relative}
-.gridbg::before{content:"";position:absolute;inset:0;
-  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
-  background-size:72px 72px;mask-image:radial-gradient(ellipse 90% 70% at 60% 20%,#000 20%,transparent 70%);pointer-events:none}
+/* ——— chess coords rails ——— */
+.rail{position:fixed;top:0;bottom:0;width:44px;z-index:5;display:flex;flex-direction:column;justify-content:space-between;padding:110px 0 40px;pointer-events:none}
+.rail.l{left:0;border-right:1px solid rgba(16,18,16,.12)}
+.rail.r{right:0;border-left:1px solid rgba(16,18,16,.12)}
+.rail span{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(16,18,16,.4);text-align:center;letter-spacing:1px}
 
-/* ---------- nav ---------- */
-nav{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.nav-in{display:flex;align-items:center;justify-content:space-between;height:76px}
-.logo{display:flex;align-items:center;gap:12px}
-.logo img{height:44px;width:auto}
-.wm{font-size:22px;font-weight:800;letter-spacing:-.5px;color:#fff}
-.wm i{font-style:normal;font-weight:400;color:var(--em-soft)}
-.navlinks{display:flex;gap:34px;font-size:14.5px;font-weight:500;color:var(--mut)}
-.navlinks a{transition:color .2s}
-.navlinks a:hover{color:#fff}
-.btn{display:inline-block;background:var(--em);color:#04251B;font-weight:700;font-size:15px;padding:12px 24px;border-radius:6px;transition:transform .15s, box-shadow .2s}
-.btn:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(16,185,129,.35)}
-.btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
-.btn.ghost:hover{border-color:var(--em);color:var(--em-soft);box-shadow:none}
+/* ——— top bar ——— */
+.top{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1.5px solid var(--rule)}
+.top-in{display:flex;align-items:stretch;height:64px}
+.brand{display:flex;align-items:center;gap:11px;padding-right:34px;border-right:1.5px solid var(--rule)}
+.brand img{height:34px}
+.brand b{font-family:'Clash Display',sans-serif;font-size:21px;font-weight:700;letter-spacing:.2px}
+.brand b i{font-style:normal;color:var(--em)}
+.topnav{display:flex;align-items:center;gap:0;flex:1}
+.topnav a{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;padding:0 22px;height:100%;display:flex;align-items:center;border-right:1px solid rgba(16,18,16,.14);transition:background .18s,color .18s}
+.topnav a:hover{background:var(--ink);color:var(--paper)}
+.top-cta{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:2px;padding-left:30px;border-left:1.5px solid var(--rule);font-weight:700}
+.top-cta .dotp{width:8px;height:8px;border-radius:50%;background:var(--em);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+.top-cta:hover{color:var(--em)}
 
-/* ---------- hero ---------- */
-header{position:relative;overflow:hidden}
-.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;padding:96px 0 72px}
-.eyebrow{font-size:12.5px;letter-spacing:5px;font-weight:600;color:var(--em-soft);margin-bottom:26px;display:flex;align-items:center;gap:14px}
-.eyebrow::before{content:"";width:34px;height:2px;background:var(--em)}
-h1{font-size:clamp(40px,5vw,64px);font-weight:800;line-height:1.04;letter-spacing:-2px}
-h1 em{font-style:normal;color:var(--em-soft)}
-.sub{margin-top:26px;font-size:19px;line-height:1.6;color:var(--mut);max-width:540px}
-.cta-row{display:flex;gap:16px;margin-top:38px}
-.hero-art{position:relative;display:flex;justify-content:center}
-.hero-art img{width:min(380px,80%);filter:drop-shadow(0 30px 60px rgba(0,0,0,.5))}
-.hero-art video{width:min(480px,100%);border-radius:14px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.45);mask-image:radial-gradient(ellipse 100% 100% at 50% 50%,#000 75%,transparent 100%)}
-.about .hero-art::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;
-  background:radial-gradient(circle,var(--em-dim),transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%)}
-.about .hero-art::after{content:"KN·f3";position:absolute;right:6%;bottom:-4px;font-family:'IBM Plex Mono',monospace;
-  font-size:12px;letter-spacing:3px;color:var(--mut);opacity:.55}
-/* staggered reveal */
-.rv{opacity:0;transform:translateY(18px);animation:rv .7s cubic-bezier(.2,.7,.3,1) forwards}
-.d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}.d5{animation-delay:.5s}
-@keyframes rv{to{opacity:1;transform:none}}
+/* ——— hero ——— */
+.hero{padding:84px 0 0;position:relative}
+.overline{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--ink-soft);margin-bottom:34px}
+.overline .st{display:flex;align-items:center;gap:9px}
+.overline .st::before{content:"";width:9px;height:9px;background:var(--em);border-radius:50%}
+h1{font-family:'Clash Display',sans-serif;font-weight:700;font-size:clamp(56px,8.6vw,132px);line-height:.94;letter-spacing:-2px;text-transform:uppercase}
+h1 .row{display:flex;align-items:center;gap:26px}
+h1 .out{color:transparent;-webkit-text-stroke:2px var(--ink)}
+h1 .grn{color:var(--em)}
+h1 img.inl{height:.82em;transform:translateY(4%)}
+.hero-foot{display:grid;grid-template-columns:1.2fr .9fr .9fr;gap:44px;align-items:end;margin:54px 0 0;padding:26px 0 34px;border-top:1.5px solid var(--rule)}
+.hero-foot .man{font-size:17.5px;line-height:1.55;color:var(--ink-soft);max-width:430px}
+.hero-foot .man b{color:var(--ink)}
+.sig{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--ink-soft);line-height:2}
+.hero-cta{justify-self:end;display:flex;flex-direction:column;gap:12px;align-items:flex-end}
+.bigbtn{font-family:'Clash Display',sans-serif;font-weight:600;font-size:19px;background:var(--ink);color:var(--paper);padding:20px 34px;display:inline-flex;align-items:center;gap:14px;transition:background .2s,gap .25s}
+.bigbtn:hover{background:var(--em);gap:22px}
+.bigbtn span{font-size:22px}
+.microcta{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:2px;color:var(--ink-soft)}
 
-/* ---------- stats bar ---------- */
-.stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(17,28,51,.5)}
-.stats-in{display:grid;grid-template-columns:repeat(4,1fr)}
-.stat{padding:26px 20px;text-align:center;border-left:1px solid var(--line)}
-.stat:first-child{border-left:none}
-.stat b{display:block;font-size:30px;font-weight:800;letter-spacing:-1px;color:#fff}
-.stat b span{color:var(--em-soft)}
-.stat small{display:block;margin-top:5px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:2.5px;color:var(--mut);text-transform:uppercase}
+/* ——— marquee ——— */
+.marq{background:var(--ink);color:var(--paper);overflow:hidden;border-top:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule)}
+.marq-in{display:flex;gap:0;white-space:nowrap;animation:marq 26s linear infinite;width:max-content}
+.marq p{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:2px;padding:13px 0}
+.marq p span{margin:0 26px;opacity:.9}
+.marq p .ok{color:var(--em-bright)}
+@keyframes marq{to{transform:translateX(-50%)}}
 
-/* ---------- platform strip ---------- */
-.plat{padding:54px 0 10px;text-align:center}
-.plat p{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:4px;color:var(--mut);margin-bottom:30px}
-.plat-row{display:flex;justify-content:center;align-items:center;gap:54px;flex-wrap:wrap;opacity:.75}
-.plat-row img{height:30px;filter:grayscale(1) brightness(1.6);transition:filter .2s,opacity .2s}
-.plat-row img:hover{filter:none;opacity:1}
+/* ——— section scaffolding ——— */
+section{padding:110px 0}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1.5px solid var(--rule);padding-bottom:20px}
+.sec-head h2{font-family:'Clash Display',sans-serif;font-size:clamp(34px,4.6vw,62px);font-weight:700;text-transform:uppercase;letter-spacing:-1px;line-height:1}
+.sec-head .idx{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:3px;color:var(--em);font-weight:700}
 
-/* ---------- sections ---------- */
-section{padding:96px 0}
-.sec-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:4px;color:var(--em-soft);margin-bottom:16px}
-h2{font-size:clamp(30px,3.4vw,42px);font-weight:800;letter-spacing:-1.2px;line-height:1.1}
-.sec-sub{margin-top:16px;color:var(--mut);font-size:17.5px;max-width:560px;line-height:1.6}
+/* problems — editorial columns */
+.cols{display:grid;grid-template-columns:repeat(3,1fr)}
+.col{padding:44px 38px 50px;border-right:1px solid rgba(16,18,16,.18);position:relative}
+.col:last-child{border-right:none}
+.col .n{font-family:'Clash Display',sans-serif;font-size:74px;font-weight:700;color:transparent;-webkit-text-stroke:1.5px var(--ink);line-height:1}
+.col:hover .n{color:var(--em);-webkit-text-stroke:0}
+.col h3{font-family:'Clash Display',sans-serif;font-size:24px;font-weight:600;margin:22px 0 12px;line-height:1.15}
+.col p{color:var(--ink-soft);font-size:16px;line-height:1.6}
+.colwrap{border-bottom:1.5px solid var(--rule)}
 
-/* problem cards */
-.probs{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
-.prob{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:30px 28px;position:relative;overflow:hidden;transition:border-color .25s,transform .25s}
-.prob:hover{border-color:rgba(16,185,129,.45);transform:translateY(-3px)}
-.prob .num{font-family:'IBM Plex Mono',monospace;color:var(--em-soft);font-size:13px;letter-spacing:2px}
-.prob h3{margin:14px 0 10px;font-size:20px;font-weight:700;letter-spacing:-.3px}
-.prob p{color:var(--mut);font-size:15.5px;line-height:1.6}
-.prob::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--em);transition:width .35s}
-.prob:hover::after{width:100%}
+/* ——— dark monitor block ——— */
+.monitor{background:var(--dark);color:#DDE5DF;padding:100px 0;position:relative}
+.monitor .wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.mon-frame{border:1px solid rgba(221,229,223,.18);padding:10px;background:var(--dark2)}
+.mon-frame video{width:100%;display:block}
+.mon-cap{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:#5F6B63;padding:10px 4px 2px}
+.monitor h2{font-family:'Clash Display',sans-serif;font-size:clamp(30px,3.6vw,50px);font-weight:700;text-transform:uppercase;line-height:1.02;letter-spacing:-1px;color:#F2EFE7}
+.monitor h2 em{font-style:normal;color:var(--em-bright)}
+.monitor .lead{margin-top:22px;color:#9AA8A0;font-size:17px;line-height:1.65;max-width:480px}
+.loglines{margin-top:30px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:2.1;color:#7C8A82}
+.loglines b{color:var(--em-bright);font-weight:500}
+.loglines .warn{color:#E5B567}
 
-/* services — light section with faceted top edge */
-.light{background:var(--light-bg);color:var(--light-txt);clip-path:polygon(0 44px,8% 0,100% 28px,100% 100%,0 100%)}
-.light .sec-sub{color:var(--light-mut)}
-.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
-.svc-card{background:#fff;border:1px solid #E4E9F0;border-radius:10px;padding:30px 28px;transition:box-shadow .25s,transform .25s}
-.svc-card:hover{box-shadow:0 18px 46px rgba(15,23,42,.10);transform:translateY(-3px)}
-.svc-card .ic{width:44px;height:44px;border-radius:9px;background:var(--em-dim);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
-.svc-card .ic svg{width:22px;height:22px;stroke:var(--em);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.svc-card h3{font-size:18.5px;font-weight:700;letter-spacing:-.3px;margin-bottom:9px}
-.svc-card p{color:var(--light-mut);font-size:15px;line-height:1.6}
+/* ——— services ledger ——— */
+.ledger{border-top:1.5px solid var(--rule)}
+.lrow{display:grid;grid-template-columns:90px 1.05fr 1.6fr 200px;align-items:center;border-bottom:1px solid rgba(16,18,16,.2);padding:26px 0;transition:background .18s,color .18s,padding-left .25s}
+.lrow:hover{background:var(--ink);color:var(--paper);padding-left:22px}
+.lrow:hover .ldesc{color:rgba(242,239,231,.72)}
+.lrow:hover .ltag{border-color:var(--em-bright);color:var(--em-bright)}
+.lnum{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--em);font-weight:700}
+.lname{font-family:'Clash Display',sans-serif;font-size:25px;font-weight:600;letter-spacing:-.3px}
+.ldesc{color:var(--ink-soft);font-size:15.5px;line-height:1.55;padding-right:36px}
+.ltag{justify-self:end;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;border:1px solid rgba(16,18,16,.4);padding:7px 13px;border-radius:20px;white-space:nowrap}
 
-/* results */
-.res{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
-.res-card{border:1px solid var(--line);border-radius:10px;padding:36px 30px;background:linear-gradient(180deg,rgba(16,185,129,.06),transparent 55%)}
-.res-card b{font-size:56px;font-weight:900;letter-spacing:-2.5px;color:var(--em-soft);display:block;line-height:1}
-.res-card b sup{font-size:26px;letter-spacing:0}
-.res-card p{margin-top:14px;color:var(--mut);font-size:15.5px;line-height:1.6}
+/* ——— numbers posters ——— */
+.posters{border-top:1.5px solid var(--rule)}
+.poster{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid var(--rule);align-items:center}
+.poster:nth-child(even) .pnum{order:2}
+.pnum{font-family:'Clash Display',sans-serif;font-weight:700;font-size:clamp(110px,16vw,230px);line-height:.9;letter-spacing:-6px;padding:34px 44px;color:transparent;-webkit-text-stroke:2.5px var(--ink);transition:color .3s}
+.poster:hover .pnum{color:var(--em);-webkit-text-stroke:0}
+.pnum sup{font-size:.35em;letter-spacing:-2px}
+.ptxt{padding:34px 44px;border-left:1px solid rgba(16,18,16,.2)}
+.poster:nth-child(even) .ptxt{border-left:none;border-right:1px solid rgba(16,18,16,.2);text-align:right}
+.ptxt h3{font-family:'Clash Display',sans-serif;font-size:26px;font-weight:600;margin-bottom:10px}
+.ptxt p{color:var(--ink-soft);font-size:16.5px;line-height:1.6;max-width:430px}
+.poster:nth-child(even) .ptxt p{margin-left:auto}
+.ptxt .mono-note{display:inline-block;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:2px;color:var(--em);border:1px solid var(--em);padding:6px 12px}
 
-/* process */
-.steps{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative}
-.steps::before{content:"";position:absolute;top:25px;left:8%;right:8%;height:2px;background:linear-gradient(90deg,var(--em),rgba(16,185,129,.15))}
-.step{padding:0 28px;position:relative}
-.step .dot{width:50px;height:50px;border-radius:50%;background:var(--ink);border:2px solid var(--em);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--em-soft);position:relative;z-index:1}
-.step h3{margin:22px 0 10px;font-size:20px;font-weight:700}
-.step p{color:var(--mut);font-size:15.5px;line-height:1.65}
-.step .mono-tag{margin-top:14px;display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--em-soft);background:var(--em-dim);padding:5px 10px;border-radius:4px}
+/* ——— process ——— */
+.proc{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--rule);border-bottom:none}
+.pstep{padding:40px 36px 46px;border-right:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule);position:relative;overflow:hidden}
+.pstep:last-child{border-right:none}
+.pstep::before{content:attr(data-n);position:absolute;right:-8px;top:-26px;font-family:'Clash Display',sans-serif;font-size:120px;font-weight:700;color:rgba(16,18,16,.07)}
+.pstep h3{font-family:'Clash Display',sans-serif;font-size:26px;font-weight:600;margin-bottom:12px}
+.pstep p{color:var(--ink-soft);font-size:15.5px;line-height:1.6;max-width:320px}
+.pstep .t{display:inline-block;margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:2px;background:var(--ink);color:var(--paper);padding:6px 12px}
+.pstep:hover .t{background:var(--em)}
 
-/* pricing */
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
-.plan{background:#fff;border:1px solid #E4E9F0;border-radius:12px;padding:34px 30px;display:flex;flex-direction:column;position:relative}
-.plan.hot{border:2px solid var(--em);box-shadow:0 24px 60px rgba(16,185,129,.14)}
-.plan .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--em);color:#04251B;font-size:12px;font-weight:700;letter-spacing:1px;padding:5px 14px;border-radius:20px}
-.plan h3{font-size:19px;font-weight:700}
-.plan .price{margin:18px 0 4px;font-size:40px;font-weight:900;letter-spacing:-1.5px}
-.plan .price small{font-size:15px;font-weight:500;color:var(--light-mut);letter-spacing:0}
-.plan .per{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--light-mut);letter-spacing:1.5px;margin-bottom:22px}
-.plan ul{list-style:none;margin-bottom:28px;flex:1}
-.plan li{padding:8px 0 8px 28px;position:relative;font-size:15px;color:#33415C;line-height:1.45}
-.plan li::before{content:"";position:absolute;left:2px;top:14px;width:14px;height:8px;border-left:2.5px solid var(--em);border-bottom:2.5px solid var(--em);transform:rotate(-45deg)}
-.plan .btn{text-align:center}
-.plan .btn.line{background:#fff;border:1.5px solid #D5DDE8;color:var(--light-txt)}
-.plan .btn.line:hover{border-color:var(--em);box-shadow:none}
+/* ——— pricing ——— */
+.prices{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--rule)}
+.price-col{padding:44px 38px;border-right:1.5px solid var(--rule);display:flex;flex-direction:column}
+.price-col:last-child{border-right:none}
+.price-col.dark{background:var(--ink);color:var(--paper)}
+.price-col h3{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:3px;font-weight:500}
+.price-col .val{font-family:'Clash Display',sans-serif;font-size:52px;font-weight:700;margin:20px 0 2px;letter-spacing:-1.5px}
+.price-col .val small{font-size:19px;font-weight:500;letter-spacing:0}
+.price-col .per{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--ink-soft);margin-bottom:26px}
+.price-col.dark .per{color:rgba(242,239,231,.55)}
+.price-col ul{list-style:none;flex:1;margin-bottom:30px}
+.price-col li{padding:9px 0;font-size:15.5px;border-bottom:1px dashed rgba(16,18,16,.2);line-height:1.45}
+.price-col.dark li{border-color:rgba(242,239,231,.18)}
+.price-col li::before{content:"→ ";color:var(--em);font-weight:700}
+.price-col.dark li::before{color:var(--em-bright)}
+.pbtn{font-family:'Clash Display',sans-serif;font-weight:600;font-size:17px;text-align:center;padding:16px;border:1.5px solid var(--ink);transition:all .2s}
+.pbtn:hover{background:var(--ink);color:var(--paper)}
+.price-col.dark .pbtn{border-color:var(--em-bright);color:var(--em-bright)}
+.price-col.dark .pbtn:hover{background:var(--em-bright);color:var(--ink)}
+.price-note{margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:1.5px;color:var(--ink-soft);text-align:center}
 
-/* about */
-.about{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.about-badges{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
-.badge{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:1px;color:var(--em-soft);border:1px solid rgba(16,185,129,.35);padding:8px 14px;border-radius:5px}
-.about p.body{color:var(--mut);font-size:16.5px;line-height:1.7;margin-top:18px}
+/* ——— manifesto ——— */
+.mani{background:var(--paper2);border-top:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule)}
+.mani-grid{display:grid;grid-template-columns:auto 1fr;gap:70px;align-items:center}
+.stamp{position:relative;width:230px;height:230px;display:flex;align-items:center;justify-content:center;transform:rotate(-7deg)}
+.stamp img{width:130px}
+.stamp svg{position:absolute;inset:0;animation:spin 26s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mani blockquote{font-family:'Clash Display',sans-serif;font-size:clamp(26px,3vw,40px);font-weight:600;line-height:1.22;letter-spacing:-.5px}
+.mani blockquote em{font-style:normal;color:var(--em)}
+.mani .who{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:2px;color:var(--ink-soft)}
 
-/* final CTA */
-.final{position:relative;overflow:hidden;background:linear-gradient(135deg,#0D2B22,#0B1220 60%);border-top:1px solid var(--line)}
-.final .wrap{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
-.final h2 em{font-style:normal;color:var(--em-soft)}
-.final .knight-ghost{position:absolute;right:-40px;bottom:-60px;height:340px;opacity:.10;transform:rotate(-6deg)}
+/* ——— CTA ——— */
+.cta{padding:130px 0 120px}
+.cta h2{font-family:'Clash Display',sans-serif;font-size:clamp(52px,8vw,120px);font-weight:700;text-transform:uppercase;line-height:.95;letter-spacing:-2px}
+.cta h2 .out{color:transparent;-webkit-text-stroke:2px var(--ink)}
+.cta .row2{display:flex;align-items:center;justify-content:space-between;gap:40px;margin-top:48px;padding-top:30px;border-top:1.5px solid var(--rule);flex-wrap:wrap}
+.cta .sub{max-width:460px;color:var(--ink-soft);font-size:17px;line-height:1.6}
+.mailbtn{font-family:'JetBrains Mono',monospace;font-size:clamp(17px,2.2vw,26px);letter-spacing:1px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:16px;border-bottom:3px solid var(--em);padding-bottom:6px;transition:color .2s,gap .25s}
+.mailbtn:hover{color:var(--em);gap:26px}
 
-/* footer */
-footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
-.foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
-.foot .logo img{height:34px}
-.foot .wm{font-size:17px}
-.foot-links{display:flex;gap:26px;color:var(--mut);font-size:14px}
-.foot-links a:hover{color:#fff}
-.copy{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mut)}
+/* ——— footer ——— */
+footer{background:var(--dark);color:#8B978F;overflow:hidden}
+.foot-top{display:flex;justify-content:space-between;padding:44px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;flex-wrap:wrap;gap:18px}
+.foot-top a:hover{color:var(--em-bright)}
+.foot-giant{font-family:'Clash Display',sans-serif;font-weight:700;font-size:clamp(80px,13.5vw,210px);line-height:.78;text-transform:uppercase;letter-spacing:-4px;color:transparent;-webkit-text-stroke:1.5px rgba(242,239,231,.25);text-align:center;transform:translateY(18%);user-select:none}
+.foot-giant i{font-style:normal;-webkit-text-stroke-color:rgba(16,185,129,.55)}
 
-@media(max-width:900px){
-  .hero{grid-template-columns:1fr;padding-top:64px}
-  .hero-art{order:-1}.hero-art img{width:220px}
-  .stats-in{grid-template-columns:repeat(2,1fr)}
-  .stat{border-left:none;border-top:1px solid var(--line)}
-  .probs,.svc,.res,.plans,.steps{grid-template-columns:1fr}
-  .steps::before{display:none}
-  .step{padding:0 0 34px}
-  .about{grid-template-columns:1fr}
-  .final .wrap{grid-template-columns:1fr}
-  .navlinks{display:none}
+@media(max-width:960px){
+  .rail{display:none}
+  .wrap{padding:0 22px}
+  .topnav{display:none}
+  .hero-foot{grid-template-columns:1fr;gap:26px}
+  .hero-cta{justify-self:start;align-items:flex-start}
+  .cols{grid-template-columns:1fr}
+  .col{border-right:none;border-bottom:1px solid rgba(16,18,16,.18)}
+  .monitor .wrap{grid-template-columns:1fr}
+  .lrow{grid-template-columns:60px 1fr;grid-template-rows:auto auto;row-gap:8px}
+  .ldesc{grid-column:2}.ltag{display:none}
+  .poster{grid-template-columns:1fr}
+  .poster:nth-child(even) .pnum{order:0}
+  .ptxt{border-left:none;text-align:left!important}
+  .proc,.prices{grid-template-columns:1fr}
+  .pstep,.price-col{border-right:none}
+  .mani-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="wrap nav-in">
-    <a class="logo" href="#top">
-      <img src="knight-light.png" alt="ReiterWeb">
-      <span class="wm">Reiter<i>Web</i></span>
-    </a>
-    <div class="navlinks">
-      <a href="#services">Services</a>
-      <a href="#results">Results</a>
-      <a href="#process">Process</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#about">About</a>
-    </div>
-    <a class="btn" href="#audit">Free tracking audit</a>
-  </div>
-</nav>
+<div class="rail l"><span>A8</span><span>B7</span><span>C6</span><span>D5</span><span>E4</span><span>F3</span><span>G2</span><span>H1</span></div>
+<div class="rail r"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span></div>
 
-<header class="gridbg" id="top">
-  <div class="wrap hero">
-    <div>
-      <div class="eyebrow rv d1">TRACKING &amp; ANALYTICS ENGINEERING</div>
-      <h1 class="rv d2">Your ads are only as good as the data feeding them. <em>We fix the data.</em></h1>
-      <p class="sub rv d3">GA4, server-side tracking and attribution engineering for brands that spend real money on ads. Built by engineers who read source code — not just tag screenshots.</p>
-      <div class="cta-row rv d4">
-        <a class="btn" href="#audit">Get a free tracking audit</a>
-        <a class="btn ghost" href="#services">What we do</a>
-      </div>
+<div class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#top">
+      <img src="knight.png" alt="">
+      <b>Reiter<i>Web</i></b>
+    </a>
+    <div class="topnav">
+      <a href="#problems">PROBLEM</a>
+      <a href="#services">SERVICES</a>
+      <a href="#results">RESULTS</a>
+      <a href="#pricing">PRICING</a>
     </div>
-    <div class="hero-art rv d5">
-      <video autoplay muted loop playsinline poster="">
-        <source src="flow.mp4" type="video/mp4">
-      </video>
-    </div>
+    <a class="top-cta" href="#audit"><span class="dotp"></span>FREE AUDIT →</a>
   </div>
-  <div class="stats">
-    <div class="wrap stats-in">
-      <div class="stat"><b>115<span>+</span></b><small>projects delivered</small></div>
-      <div class="stat"><b>6,000<span>+</span></b><small>engineering hours</small></div>
-      <div class="stat"><b>&lt;24<span>h</span></b><small>response time</small></div>
-      <div class="stat"><b>40<span>%</span></b><small>conversions recovered</small></div>
+</div>
+
+<header class="hero wrap" id="top">
+  <div class="overline">
+    <span class="st">TRACKING &amp; ANALYTICS ENGINEERING</span>
+    <span>EST. LODZ / EU — WORKING WORLDWIDE</span>
+  </div>
+  <h1>
+    <div class="row">Your ads are</div>
+    <div class="row">only as good <img class="inl" src="knight.png" alt=""></div>
+    <div class="row"><span class="out">as the data.</span></div>
+    <div class="row"><span class="grn">We fix the data.</span></div>
+  </h1>
+  <div class="hero-foot">
+    <p class="man"><b>ReiterWeb is a tracking engineering studio.</b> We build and repair the measurement layer between your site and your ad platforms — GA4, server-side tagging, conversion APIs, consent. Built by engineers who read source code, not tag screenshots.</p>
+    <div class="sig">
+      115+ PROJECTS DELIVERED<br>
+      6,000+ ENGINEERING HOURS<br>
+      &lt;24H RESPONSE / EU-BASED
+    </div>
+    <div class="hero-cta">
+      <a class="bigbtn" href="#audit">Get a free audit <span>→</span></a>
+      <span class="microcta">NO CALL REQUIRED — SEND A LINK, GET FINDINGS</span>
     </div>
   </div>
 </header>
 
-<div class="plat">
-  <div class="wrap">
-    <p>THE STACK WE LIVE IN</p>
-    <div class="plat-row">
-      <img src="https://cdn.simpleicons.org/googleanalytics/8A99B0" alt="Google Analytics 4" title="GA4">
-      <img src="https://cdn.simpleicons.org/googletagmanager/8A99B0" alt="Google Tag Manager" title="GTM">
-      <img src="https://cdn.simpleicons.org/googleads/8A99B0" alt="Google Ads" title="Google Ads">
-      <img src="https://cdn.simpleicons.org/meta/8A99B0" alt="Meta" title="Meta CAPI">
-      <img src="https://cdn.simpleicons.org/shopify/8A99B0" alt="Shopify" title="Shopify">
-      <img src="https://cdn.simpleicons.org/woocommerce/8A99B0" alt="WooCommerce" title="WooCommerce">
-      <img src="https://cdn.simpleicons.org/googlebigquery/8A99B0" alt="BigQuery" title="BigQuery">
-      <img src="https://cdn.simpleicons.org/looker/8A99B0" alt="Looker Studio" title="Looker Studio">
-    </div>
+<div class="marq">
+  <div class="marq-in">
+    <p><span>purchase <b class="ok">✓ verified</b></span><span>add_to_cart <b class="ok">✓ verified</b></span><span>begin_checkout <b class="ok">✓ verified</b></span><span>generate_lead <b class="ok">✓ verified</b></span><span>consent_update <b class="ok">✓ granted</b></span><span>event_id <b class="ok">✓ deduplicated</b></span><span>utm_source <b class="ok">✓ preserved</b></span><span>server_side <b class="ok">✓ first-party</b></span></p>
+    <p><span>purchase <b class="ok">✓ verified</b></span><span>add_to_cart <b class="ok">✓ verified</b></span><span>begin_checkout <b class="ok">✓ verified</b></span><span>generate_lead <b class="ok">✓ verified</b></span><span>consent_update <b class="ok">✓ granted</b></span><span>event_id <b class="ok">✓ deduplicated</b></span><span>utm_source <b class="ok">✓ preserved</b></span><span>server_side <b class="ok">✓ first-party</b></span></p>
   </div>
 </div>
 
-<section>
+<section id="problems">
   <div class="wrap">
-    <div class="sec-eyebrow">// THE PROBLEM</div>
-    <h2>Broken tracking is a silent budget leak</h2>
-    <p class="sec-sub">Ad platforms optimize toward the data your site sends them. When that data is wrong, every downstream decision is wrong too.</p>
-    <div class="probs">
-      <div class="prob">
-        <div class="num">[ 01 ]</div>
+    <div class="sec-head"><h2>The silent budget leak</h2><span class="idx">SEC. 01 — PROBLEM</span></div>
+    <div class="colwrap cols">
+      <div class="col">
+        <div class="n">01</div>
         <h3>Numbers that never match</h3>
-        <p>GA4 says one thing, Ads Manager another, Shopify a third. Nobody trusts the reports, so decisions run on gut feeling.</p>
+        <p>GA4 says one thing, Ads Manager another, Shopify a third. Nobody trusts the reports — so decisions run on gut feeling, and gut feeling doesn't scale.</p>
       </div>
-      <div class="prob">
-        <div class="num">[ 02 ]</div>
-        <h3>Conversions lost to consent</h3>
-        <p>Misconfigured Consent Mode silently drops 15–40% of conversions in the EU. Your ROAS looks worse than it actually is.</p>
+      <div class="col">
+        <div class="n">02</div>
+        <h3>Conversions eaten by consent</h3>
+        <p>A misconfigured Consent Mode silently drops 15–40% of EU conversions. Your ROAS looks worse than reality, and platforms optimize on starved data.</p>
       </div>
-      <div class="prob">
-        <div class="num">[ 03 ]</div>
+      <div class="col">
+        <div class="n">03</div>
         <h3>Attribution black holes</h3>
-        <p>Half your orders show up as "unattributed". Scaling budget without knowing which channel drives revenue is gambling.</p>
+        <p>Half your orders arrive "unattributed". Scaling ad budget without knowing which channel drives revenue isn't marketing — it's gambling.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section class="light" id="services">
+<div class="monitor">
   <div class="wrap">
-    <div class="sec-eyebrow">// SERVICES</div>
-    <h2>Everything between your site and your ad platforms</h2>
-    <div class="svc">
-      <div class="svc-card">
-        <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div>
-        <h3>GA4 + GTM engineering</h3>
-        <p>Event architecture, ecommerce funnels, dataLayer design, custom dimensions, cross-domain — built to survive redesigns.</p>
+    <div class="mon-frame">
+      <video autoplay muted loop playsinline>
+        <source src="flow.mp4" type="video/mp4">
+      </video>
+      <div class="mon-cap"><span>FIG. 1 — EVENT DELIVERY, LIVE</span><span>SITE → sGTM → PLATFORMS</span></div>
+    </div>
+    <div>
+      <h2>Every event.<br>Every platform.<br><em>Verified.</em></h2>
+      <p class="lead">We route your conversions through a first-party, server-side layer and verify delivery end to end — so Google and Meta optimize on complete, deduplicated, consent-clean data.</p>
+      <div class="loglines">
+        <div>$ audit --site yourstore.com</div>
+        <div><span class="warn">⚠ found:</span> duplicate GTM container</div>
+        <div><span class="warn">⚠ found:</span> purchase fires twice on reload</div>
+        <div><span class="warn">⚠ found:</span> consent default blocks EU hits</div>
+        <div><b>✓ fixed:</b> −60% event duplication</div>
+        <div><b>✓ fixed:</b> +31% conversions restored</div>
       </div>
-      <div class="svc-card">
-        <div class="ic"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg></div>
-        <h3>Server-side GTM</h3>
-        <p>First-party tracking through your own subdomain (Stape or GCP): cleaner data, longer cookies, stronger attribution.</p>
+    </div>
+  </div>
+</div>
+
+<section id="services">
+  <div class="wrap">
+    <div class="sec-head"><h2>What we build</h2><span class="idx">SEC. 02 — SERVICES</span></div>
+    <div class="ledger">
+      <div class="lrow">
+        <span class="lnum">S/01</span>
+        <span class="lname">GA4 + GTM engineering</span>
+        <span class="ldesc">Event architecture, ecommerce funnels, dataLayer design, custom dimensions, cross-domain — built to survive redesigns and plugin updates.</span>
+        <span class="ltag">MEASUREMENT</span>
       </div>
-      <div class="svc-card">
-        <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
-        <h3>Conversion APIs</h3>
-        <p>Meta CAPI, Google enhanced conversions, LinkedIn &amp; Reddit CAPI — with event_id deduplication and quality checks.</p>
+      <div class="lrow">
+        <span class="lnum">S/02</span>
+        <span class="lname">Server-side tagging</span>
+        <span class="ldesc">First-party tracking through your own subdomain on Stape or Google Cloud: cleaner data, longer cookies, stronger attribution.</span>
+        <span class="ltag">INFRASTRUCTURE</span>
       </div>
-      <div class="svc-card">
-        <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <h3>Consent Mode v2 &amp; GDPR</h3>
-        <p>Cookiebot, OneTrust, custom banners — compliant setups that stop throwing your EU conversions away.</p>
+      <div class="lrow">
+        <span class="lnum">S/03</span>
+        <span class="lname">Conversion APIs</span>
+        <span class="ldesc">Meta CAPI, Google enhanced conversions, LinkedIn &amp; Reddit — with event_id deduplication and event-quality checks that actually pass.</span>
+        <span class="ltag">SIGNALS</span>
       </div>
-      <div class="svc-card">
-        <div class="ic"><svg viewBox="0 0 24 24"><path d="M6 2l1 5h10l1-5"/><path d="M4 7h16l-1.5 13a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2z"/></svg></div>
-        <h3>Ecommerce platforms</h3>
-        <p>Shopify (incl. checkout extensibility &amp; webhooks), WooCommerce, Webflow, Framer, and custom JavaScript stacks.</p>
+      <div class="lrow">
+        <span class="lnum">S/04</span>
+        <span class="lname">Consent Mode v2 / GDPR</span>
+        <span class="ldesc">Cookiebot, OneTrust, custom banners — compliant setups that stop throwing your EU conversions away.</span>
+        <span class="ltag">COMPLIANCE</span>
       </div>
-      <div class="svc-card">
-        <div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg></div>
-        <h3>Reporting that gets opened</h3>
-        <p>Looker Studio dashboards your team actually uses — revenue, channels and funnels in one place, updated live.</p>
+      <div class="lrow">
+        <span class="lnum">S/05</span>
+        <span class="lname">Ecommerce platforms</span>
+        <span class="ldesc">Shopify — including checkout extensibility and webhooks — WooCommerce, Webflow, Framer, and custom JavaScript stacks.</span>
+        <span class="ltag">PLATFORMS</span>
+      </div>
+      <div class="lrow">
+        <span class="lnum">S/06</span>
+        <span class="lname">Reporting that gets opened</span>
+        <span class="ldesc">Looker Studio dashboards your team actually uses: revenue, channels and funnels in one place, updated live.</span>
+        <span class="ltag">REPORTING</span>
       </div>
     </div>
   </div>
@@ -301,61 +350,68 @@ footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
 
 <section id="results">
   <div class="wrap">
-    <div class="sec-eyebrow">// RESULTS FROM REAL PROJECTS</div>
-    <h2>What clients paid for — and kept</h2>
-    <div class="res">
-      <div class="res-card">
-        <b>15–40<sup>%</sup></b>
-        <p>of conversions recovered after fixing Consent Mode misconfiguration on EU traffic.</p>
+    <div class="sec-head"><h2>Paid for — and kept</h2><span class="idx">SEC. 03 — RESULTS</span></div>
+    <div class="posters">
+      <div class="poster">
+        <div class="pnum">40<sup>%</sup></div>
+        <div class="ptxt">
+          <h3>Conversions recovered</h3>
+          <p>After fixing Consent Mode misconfiguration on EU traffic, recovered conversions the platforms never saw — the cheapest ROAS lift you'll ever get.</p>
+          <span class="mono-note">CONSENT MODE V2 · EU TRAFFIC</span>
+        </div>
       </div>
-      <div class="res-card">
-        <b>−60<sup>%</sup></b>
-        <p>GA4 event duplication removed through clean dataLayer architecture on ecommerce funnels.</p>
+      <div class="poster">
+        <div class="pnum">−60<sup>%</sup></div>
+        <div class="ptxt">
+          <h3>Event duplication removed</h3>
+          <p>Clean dataLayer architecture on ecommerce funnels: one purchase, one event, one truth across GA4, Ads and Meta.</p>
+          <span class="mono-note">DATALAYER REBUILD · ECOM</span>
+        </div>
       </div>
-      <div class="res-card">
-        <b>−35<sup>%</sup></b>
-        <p>tag load time after moving vendor pixels server-side — faster pages, same signals.</p>
+      <div class="poster">
+        <div class="pnum">−35<sup>%</sup></div>
+        <div class="ptxt">
+          <h3>Tag load time cut</h3>
+          <p>Vendor pixels moved server-side: faster pages, same signals. Your Core Web Vitals will send a thank-you note.</p>
+          <span class="mono-note">SERVER-SIDE MIGRATION</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="gridbg" id="process">
+<section id="process">
   <div class="wrap">
-    <div class="sec-eyebrow">// HOW WE START</div>
-    <h2>Diagnosis before invoice</h2>
-    <p class="sec-sub">You don't commit to anything before you know exactly what's broken, what's missing, and what it takes to fix.</p>
-    <div class="steps">
-      <div class="step">
-        <div class="dot">01</div>
+    <div class="sec-head"><h2>Diagnosis before invoice</h2><span class="idx">SEC. 04 — PROCESS</span></div>
+    <div style="height:34px"></div>
+    <div class="proc">
+      <div class="pstep" data-n="01">
         <h3>Audit</h3>
-        <p>Send your site and ad platforms. We map the funnel, read the source, and deliver a written findings doc.</p>
-        <span class="mono-tag">2–4 days</span>
+        <p>Send your site and ad platforms. We map the funnel, read the source, and deliver a written findings doc with priorities.</p>
+        <span class="t">2–4 DAYS</span>
       </div>
-      <div class="step">
-        <div class="dot">02</div>
+      <div class="pstep" data-n="02">
         <h3>Fix &amp; build</h3>
         <p>Rebuild what's broken, build what's missing: tags, dataLayer, server-side, consent — verified end to end in DebugView.</p>
-        <span class="mono-tag">1–3 weeks</span>
+        <span class="t">1–3 WEEKS</span>
       </div>
-      <div class="step">
-        <div class="dot">03</div>
+      <div class="pstep" data-n="03">
         <h3>Monitor</h3>
-        <p>We stay as your tracking team: catching degradation before it costs money, adapting to platform changes.</p>
-        <span class="mono-tag">ongoing</span>
+        <p>We stay as your tracking team — catching degradation before it costs money, adapting to platform changes.</p>
+        <span class="t">ONGOING</span>
       </div>
     </div>
   </div>
 </section>
 
-<section class="light" id="pricing">
+<section id="pricing">
   <div class="wrap">
-    <div class="sec-eyebrow">// PRICING</div>
-    <h2>Fixed scope. Fixed price. No surprises.</h2>
-    <div class="plans">
-      <div class="plan">
-        <h3>Tracking Audit</h3>
-        <div class="price">from $750</div>
+    <div class="sec-head"><h2>Fixed scope, fixed price</h2><span class="idx">SEC. 05 — PRICING</span></div>
+    <div style="height:34px"></div>
+    <div class="prices">
+      <div class="price-col">
+        <h3>TRACKING AUDIT</h3>
+        <div class="val">from $750</div>
         <div class="per">ONE-TIME · 2–4 DAYS</div>
         <ul>
           <li>Full GA4 + GTM + pixels review</li>
@@ -363,12 +419,11 @@ footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
           <li>Written findings doc with priorities</li>
           <li>Fix-it-yourself or hire-us — your call</li>
         </ul>
-        <a class="btn line" href="#audit">Start with an audit</a>
+        <a class="pbtn" href="#audit">Start with an audit</a>
       </div>
-      <div class="plan hot">
-        <span class="tag">MOST POPULAR</span>
-        <h3>Rebuild &amp; Fix</h3>
-        <div class="price">from $1,500</div>
+      <div class="price-col dark">
+        <h3 style="color:#10B981">REBUILD &amp; FIX ★</h3>
+        <div class="val">from $1,500</div>
         <div class="per">PROJECT · 1–3 WEEKS</div>
         <ul>
           <li>Everything in Audit</li>
@@ -377,11 +432,11 @@ footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
           <li>Consent Mode v2 done right</li>
           <li>Verified conversions, documented setup</li>
         </ul>
-        <a class="btn" href="#audit">Fix my tracking</a>
+        <a class="pbtn" href="#audit">Fix my tracking</a>
       </div>
-      <div class="plan">
-        <h3>Tracking Retainer</h3>
-        <div class="price">from $800<small>/mo</small></div>
+      <div class="price-col">
+        <h3>RETAINER</h3>
+        <div class="val">from $800<small>/mo</small></div>
         <div class="per">MONTHLY · CANCEL ANYTIME</div>
         <ul>
           <li>Your on-call tracking team</li>
@@ -389,57 +444,48 @@ footer{border-top:1px solid var(--line);padding:46px 0;background:var(--ink)}
           <li>New campaigns wired for tracking</li>
           <li>Platform-change adaptations</li>
         </ul>
-        <a class="btn line" href="#audit">Talk retainer</a>
+        <a class="pbtn" href="#audit">Talk retainer</a>
       </div>
     </div>
+    <div class="price-note">EVERY ENGAGEMENT STARTS WITH THE FREE MINI-AUDIT BELOW — SO YOU BUY FIXES, NOT PROMISES</div>
   </div>
 </section>
 
-<section id="about">
-  <div class="wrap about">
-    <div>
-      <div class="sec-eyebrow">// WHO'S BEHIND THIS</div>
-      <h2>Engineers, not tag-clickers</h2>
-      <p class="body">ReiterWeb is led by Artem R. — a tracking engineer with a software-development background, 115+ delivered projects and 6,000+ hours in GA4, GTM and server-side tracking. Every delivery is reviewed by a senior engineer before it reaches you.</p>
-      <p class="body">We read your source code, debug the dataLayer, and build tracking that survives redesigns, plugin updates and CMS migrations — instead of breaking a month later.</p>
-      <div class="about-badges">
-        <span class="badge">EU-BASED · GDPR-NATIVE</span>
-        <span class="badge">115+ PROJECTS</span>
-        <span class="badge">6,000+ HOURS</span>
-        <span class="badge">DEV BACKGROUND</span>
+<div class="mani">
+  <section style="padding:90px 0">
+  <div class="wrap mani-grid">
+      <div class="stamp">
+        <svg viewBox="0 0 230 230">
+          <defs><path id="circ" d="M115,115 m-98,0 a98,98 0 1,1 196,0 a98,98 0 1,1 -196,0"/></defs>
+          <text style="font-family:'JetBrains Mono',monospace;font-size:13.5px;letter-spacing:3.5px;fill:#101210">
+            <textPath href="#circ">REITERWEB · TRACKING ENGINEERING · EST. LODZ EU ·</textPath>
+          </text>
+        </svg>
+        <img src="knight.png" alt="">
       </div>
-    </div>
-    <div class="hero-art"><img src="knight.png" alt="" style="width:280px"></div>
+      <div>
+        <blockquote>"Most agencies sell you dashboards. We make sure the <em>numbers inside them are true</em> — everything else is decoration."</blockquote>
+        <div class="who">ARTEM R. — FOUNDER, TRACKING ENGINEER · 115+ PROJECTS · DEV BACKGROUND</div>
+      </div>
   </div>
-</section>
+  </section>
+</div>
 
-<section class="final" id="audit">
-  <img class="knight-ghost" src="knight.png" alt="">
-  <div class="wrap">
-    <div>
-      <div class="sec-eyebrow">// FREE TRACKING AUDIT</div>
-      <h2>Send us your site. We'll tell you <em>what's broken</em> — before you pay for anything.</h2>
-      <p class="sec-sub">Your site + your ad platforms + your tracking goal. We'll map the funnel and reply with exactly what needs fixing.</p>
-    </div>
-    <div>
-      <a class="btn" style="font-size:17px;padding:16px 32px" href="mailto:hello@reiterweb.com?subject=Free%20tracking%20audit">hello@reiterweb.com →</a>
-    </div>
+<section class="cta wrap" id="audit">
+  <h2>Send us <span class="out">your site.</span><br>We'll tell you what's <span style="color:var(--em)">broken.</span></h2>
+  <div class="row2">
+    <p class="sub">Your site + your ad platforms + your tracking goal. We map the funnel and reply with exactly what needs fixing — before you pay for anything.</p>
+    <a class="mailbtn" href="mailto:hello@reiterweb.com?subject=Free%20tracking%20audit">hello@reiterweb.com <span>→</span></a>
   </div>
 </section>
 
 <footer>
-  <div class="wrap foot">
-    <a class="logo" href="#top">
-      <img src="knight-light.png" alt="">
-      <span class="wm">Reiter<i>Web</i></span>
-    </a>
-    <div class="foot-links">
-      <a href="#services">Services</a>
-      <a href="#pricing">Pricing</a>
-      <a href="mailto:hello@reiterweb.com">Contact</a>
-    </div>
-    <div class="copy">© 2026 REITERWEB · LODZ, PL</div>
+  <div class="foot-top">
+    <span>© 2026 REITERWEB — LODZ, PL</span>
+    <span><a href="#services">SERVICES</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="#pricing">PRICING</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="mailto:hello@reiterweb.com">CONTACT</a></span>
+    <span>GA4 · SGTM · CAPI · CONSENT</span>
   </div>
+  <div class="foot-giant">Reiter<i>Web</i></div>
 </footer>
 
 </body>
