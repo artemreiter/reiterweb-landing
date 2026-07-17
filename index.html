@@ -5,413 +5,367 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ReiterWeb — Tracking & Analytics Engineering</title>
 <meta name="description" content="GA4, server-side tracking and attribution engineering for brands that spend real money on ads. We fix the data your ad budget depends on.">
-<link rel="preconnect" href="https://api.fontshare.com">
-<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#F2EFE7; --paper2:#EAE6DA; --ink:#101210; --ink-soft:#3A3D3A;
-  --em:#0E9F6E; --em-bright:#10B981; --dark:#0C0F0D; --dark2:#141816;
-  --rule:#101210;
+  --mint:#EFFAF6; --mint2:#E2F5EE; --ink:#16241E; --soft:#5A6E64;
+  --em:#10B981; --em-d:#0B9268; --orange:#FF6B35; --card:#FFFFFF;
+  --line:#D8EAE2;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 ::selection{background:var(--em);color:#fff}
-body{font-family:'Satoshi',sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;z-index:99;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E")}
-.mono{font-family:'JetBrains Mono',monospace}
+body{font-family:'Satoshi',sans-serif;background:var(--mint);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,.mfont{font-family:'Martian Mono',monospace}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:1360px;margin:0 auto;padding:0 44px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 30px}
 
-/* ——— chess coords rails ——— */
-.rail{position:fixed;top:0;bottom:0;width:44px;z-index:5;display:flex;flex-direction:column;justify-content:space-between;padding:110px 0 40px;pointer-events:none}
-.rail.l{left:0;border-right:1px solid rgba(16,18,16,.12)}
-.rail.r{right:0;border-left:1px solid rgba(16,18,16,.12)}
-.rail span{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(16,18,16,.4);text-align:center;letter-spacing:1px}
+/* reveal on scroll */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.65,.3,1),transform .7s cubic-bezier(.2,.65,.3,1)}
+.rv.on{opacity:1;transform:none}
+.rv.dl1{transition-delay:.08s}.rv.dl2{transition-delay:.16s}.rv.dl3{transition-delay:.24s}.rv.dl4{transition-delay:.32s}
 
-/* ——— top bar ——— */
-.top{position:sticky;top:0;z-index:60;background:var(--paper);border-bottom:1.5px solid var(--rule)}
-.top-in{display:flex;align-items:stretch;height:64px}
-.brand{display:flex;align-items:center;gap:11px;padding-right:34px;border-right:1.5px solid var(--rule)}
-.brand img{height:34px}
-.brand b{font-family:'Clash Display',sans-serif;font-size:21px;font-weight:700;letter-spacing:.2px}
-.brand b i{font-style:normal;color:var(--em)}
-.topnav{display:flex;align-items:center;gap:0;flex:1}
-.topnav a{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;padding:0 22px;height:100%;display:flex;align-items:center;border-right:1px solid rgba(16,18,16,.14);transition:background .18s,color .18s}
-.topnav a:hover{background:var(--ink);color:var(--paper)}
-.top-cta{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:2px;padding-left:30px;border-left:1.5px solid var(--rule);font-weight:700}
-.top-cta .dotp{width:8px;height:8px;border-radius:50%;background:var(--em);animation:blink 1.6s infinite}
-@keyframes blink{50%{opacity:.25}}
-.top-cta:hover{color:var(--em)}
+/* ——— nav ——— */
+nav{position:sticky;top:0;z-index:80;background:rgba(239,250,246,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:74px}
+.logo{display:flex;align-items:center;gap:11px}
+.logo img{height:38px}
+.logo b{font-family:'Martian Mono',monospace;font-size:19px;font-weight:700;letter-spacing:-.5px}
+.logo b i{font-style:normal;color:var(--em-d)}
+.nl{display:flex;gap:30px;font-size:15px;font-weight:500;color:var(--soft)}
+.nl a{position:relative;padding:4px 0}
+.nl a::after{content:"";position:absolute;left:0;bottom:-2px;height:2.5px;width:0;background:var(--orange);border-radius:2px;transition:width .25s}
+.nl a:hover{color:var(--ink)}
+.nl a:hover::after{width:100%}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--em);color:#fff;font-weight:700;font-size:15.5px;padding:13px 26px;border-radius:12px;box-shadow:0 4px 0 var(--em-d);transition:transform .12s,box-shadow .12s;border:none;cursor:pointer}
+.btn:hover{transform:translateY(2px);box-shadow:0 2px 0 var(--em-d)}
+.btn.big{font-size:17px;padding:17px 34px;border-radius:14px}
 
 /* ——— hero ——— */
-.hero{padding:84px 0 0;position:relative}
-.overline{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3px;color:var(--ink-soft);margin-bottom:34px}
-.overline .st{display:flex;align-items:center;gap:9px}
-.overline .st::before{content:"";width:9px;height:9px;background:var(--em);border-radius:50%}
-h1{font-family:'Clash Display',sans-serif;font-weight:700;font-size:clamp(56px,8.6vw,132px);line-height:.94;letter-spacing:-2px;text-transform:uppercase}
-h1 .row{display:flex;align-items:center;gap:26px}
-h1 .out{color:transparent;-webkit-text-stroke:2px var(--ink)}
-h1 .grn{color:var(--em)}
-h1 img.inl{height:.82em;transform:translateY(4%)}
-.hero-foot{display:grid;grid-template-columns:1.2fr .9fr .9fr;gap:44px;align-items:end;margin:54px 0 0;padding:26px 0 34px;border-top:1.5px solid var(--rule)}
-.hero-foot .man{font-size:17.5px;line-height:1.55;color:var(--ink-soft);max-width:430px}
-.hero-foot .man b{color:var(--ink)}
-.sig{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--ink-soft);line-height:2}
-.hero-cta{justify-self:end;display:flex;flex-direction:column;gap:12px;align-items:flex-end}
-.bigbtn{font-family:'Clash Display',sans-serif;font-weight:600;font-size:19px;background:var(--ink);color:var(--paper);padding:20px 34px;display:inline-flex;align-items:center;gap:14px;transition:background .2s,gap .25s}
-.bigbtn:hover{background:var(--em);gap:22px}
-.bigbtn span{font-size:22px}
-.microcta{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:2px;color:var(--ink-soft)}
+.hero{padding:96px 0 40px;text-align:center;position:relative}
+.chip{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1.5px solid var(--line);border-radius:30px;padding:9px 18px;font-family:'Martian Mono',monospace;font-size:12px;letter-spacing:.5px;color:var(--soft);margin-bottom:34px}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--em);animation:blink 1.8s infinite}
+@keyframes blink{50%{opacity:.3}}
+h1{font-size:clamp(30px,4.6vw,54px);font-weight:600;line-height:1.28;letter-spacing:-1.5px;max-width:1000px;margin:0 auto}
+.circ{position:relative;display:inline-block;padding:2px 12px;white-space:nowrap}
+.circ svg{position:absolute;inset:-9px -14px;width:calc(100% + 28px);height:calc(100% + 18px);overflow:visible}
+.circ svg path{fill:none;stroke:var(--em);stroke-width:3.5;stroke-linecap:round;
+  stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 1.1s .7s cubic-bezier(.4,0,.3,1) forwards}
+.und{position:relative;display:inline-block;white-space:nowrap}
+.und svg{position:absolute;left:-2%;bottom:-13px;width:104%;height:16px;overflow:visible}
+.und svg path{fill:none;stroke:var(--orange);stroke-width:4;stroke-linecap:round;
+  stroke-dasharray:600;stroke-dashoffset:600;animation:draw .8s 1.5s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.hero .sub{margin:34px auto 0;max-width:620px;font-size:18.5px;line-height:1.65;color:var(--soft)}
+.hero-cta{margin-top:40px;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap}
+.ghostlink{font-weight:700;font-size:16px;color:var(--ink);border-bottom:2.5px solid var(--orange);padding-bottom:3px;transition:color .2s}
+.ghostlink:hover{color:var(--orange)}
+/* doodle note */
+.doodle{position:relative;margin:56px auto 0;width:fit-content;transform:rotate(-2deg)}
+.doodle .hand{font-family:'Caveat',cursive;font-size:15px;color:var(--orange)}
+.trust{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:54px;flex-wrap:wrap}
+.trust .avs{display:flex}
+.trust .avs span{width:38px;height:38px;border-radius:50%;border:2.5px solid var(--mint);margin-left:-10px;display:flex;align-items:center;justify-content:center;font-size:15px;background:#fff}
+.trust p{font-size:14.5px;color:var(--soft)}
+.trust p b{color:var(--ink)}
 
-/* ——— marquee ——— */
-.marq{background:var(--ink);color:var(--paper);overflow:hidden;border-top:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule)}
-.marq-in{display:flex;gap:0;white-space:nowrap;animation:marq 26s linear infinite;width:max-content}
-.marq p{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:2px;padding:13px 0}
-.marq p span{margin:0 26px;opacity:.9}
-.marq p .ok{color:var(--em-bright)}
+/* ——— logo marquee ——— */
+.marq{margin:64px 0 0;border-top:1.5px solid var(--line);border-bottom:1.5px solid var(--line);background:#fff;overflow:hidden}
+.marq-in{display:flex;width:max-content;animation:marq 30s linear infinite;align-items:center}
+.marq-in:hover{animation-play-state:paused}
+.mi{display:flex;align-items:center;gap:64px;padding:20px 32px}
+.mi img{height:26px;opacity:.55;filter:grayscale(1);transition:.25s}
+.mi img:hover{opacity:1;filter:none}
 @keyframes marq{to{transform:translateX(-50%)}}
 
-/* ——— section scaffolding ——— */
-section{padding:110px 0}
-.sec-head{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1.5px solid var(--rule);padding-bottom:20px}
-.sec-head h2{font-family:'Clash Display',sans-serif;font-size:clamp(34px,4.6vw,62px);font-weight:700;text-transform:uppercase;letter-spacing:-1px;line-height:1}
-.sec-head .idx{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:3px;color:var(--em);font-weight:700}
+/* ——— emerald band ——— */
+.band{margin-top:96px;background:var(--em);position:relative;color:#fff;padding:96px 0}
+.band::before,.band::after{content:"";position:absolute;left:0;right:0;height:34px;
+  background:repeating-linear-gradient(0deg,var(--em) 0 5px,transparent 5px 11px)}
+.band::before{top:-34px}
+.band::after{bottom:-34px;transform:scaleY(-1)}
+.band h2{font-size:clamp(26px,3.4vw,40px);font-weight:600;letter-spacing:-1px;line-height:1.3;max-width:720px}
+.band h2 mark{background:none;color:#FFE3D6;position:relative;white-space:nowrap}
+.band .grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;margin-top:14px}
+.band .lead{margin-top:22px;font-size:17px;line-height:1.65;color:rgba(255,255,255,.85);max-width:520px}
+.checkrow{margin-top:30px;display:flex;flex-direction:column;gap:14px}
+.checkrow div{display:flex;gap:13px;align-items:flex-start;font-size:16px;line-height:1.5}
+.checkrow .c{flex:none;width:24px;height:24px;border-radius:7px;background:#fff;color:var(--em-d);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;margin-top:1px}
+.vidcard{background:#fff;border-radius:18px;padding:12px;box-shadow:0 24px 60px rgba(10,60,40,.35)}
+.vidcard video{width:100%;border-radius:10px;display:block}
+.vidcard .cap{display:flex;justify-content:space-between;font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:1px;color:var(--soft);padding:10px 6px 4px}
 
-/* problems — editorial columns */
-.cols{display:grid;grid-template-columns:repeat(3,1fr)}
-.col{padding:44px 38px 50px;border-right:1px solid rgba(16,18,16,.18);position:relative}
-.col:last-child{border-right:none}
-.col .n{font-family:'Clash Display',sans-serif;font-size:74px;font-weight:700;color:transparent;-webkit-text-stroke:1.5px var(--ink);line-height:1}
-.col:hover .n{color:var(--em);-webkit-text-stroke:0}
-.col h3{font-family:'Clash Display',sans-serif;font-size:24px;font-weight:600;margin:22px 0 12px;line-height:1.15}
-.col p{color:var(--ink-soft);font-size:16px;line-height:1.6}
-.colwrap{border-bottom:1.5px solid var(--rule)}
+/* ——— services ——— */
+section.pad{padding:110px 0}
+.center{text-align:center}
+.kick{font-family:'Martian Mono',monospace;font-size:12.5px;letter-spacing:3px;color:var(--em-d);font-weight:600;margin-bottom:18px;display:block}
+h2.t{font-size:clamp(28px,3.6vw,44px);font-weight:600;letter-spacing:-1.2px;line-height:1.25}
+.tsub{margin:20px auto 0;color:var(--soft);font-size:17.5px;max-width:560px;line-height:1.6}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:60px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:32px 28px;text-align:left;transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-6px);box-shadow:0 22px 46px rgba(22,36,30,.09)}
+.card .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px;background:var(--mint2)}
+.card h3{font-size:16.5px;font-weight:600;letter-spacing:-.4px;margin-bottom:10px;line-height:1.35}
+.card p{color:var(--soft);font-size:15px;line-height:1.6}
+.card .corner{position:absolute;top:18px;right:20px;font-family:'Martian Mono',monospace;font-size:11px;color:var(--line)}
+.card:hover .corner{color:var(--orange)}
 
-/* ——— dark monitor block ——— */
-.monitor{background:var(--dark);color:#DDE5DF;padding:100px 0;position:relative}
-.monitor .wrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.mon-frame{border:1px solid rgba(221,229,223,.18);padding:10px;background:var(--dark2)}
-.mon-frame video{width:100%;display:block}
-.mon-cap{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:#5F6B63;padding:10px 4px 2px}
-.monitor h2{font-family:'Clash Display',sans-serif;font-size:clamp(30px,3.6vw,50px);font-weight:700;text-transform:uppercase;line-height:1.02;letter-spacing:-1px;color:#F2EFE7}
-.monitor h2 em{font-style:normal;color:var(--em-bright)}
-.monitor .lead{margin-top:22px;color:#9AA8A0;font-size:17px;line-height:1.65;max-width:480px}
-.loglines{margin-top:30px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:2.1;color:#7C8A82}
-.loglines b{color:var(--em-bright);font-weight:500}
-.loglines .warn{color:#E5B567}
-
-/* ——— services ledger ——— */
-.ledger{border-top:1.5px solid var(--rule)}
-.lrow{display:grid;grid-template-columns:90px 1.05fr 1.6fr 200px;align-items:center;border-bottom:1px solid rgba(16,18,16,.2);padding:26px 0;transition:background .18s,color .18s,padding-left .25s}
-.lrow:hover{background:var(--ink);color:var(--paper);padding-left:22px}
-.lrow:hover .ldesc{color:rgba(242,239,231,.72)}
-.lrow:hover .ltag{border-color:var(--em-bright);color:var(--em-bright)}
-.lnum{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--em);font-weight:700}
-.lname{font-family:'Clash Display',sans-serif;font-size:25px;font-weight:600;letter-spacing:-.3px}
-.ldesc{color:var(--ink-soft);font-size:15.5px;line-height:1.55;padding-right:36px}
-.ltag{justify-self:end;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1.5px;border:1px solid rgba(16,18,16,.4);padding:7px 13px;border-radius:20px;white-space:nowrap}
-
-/* ——— numbers posters ——— */
-.posters{border-top:1.5px solid var(--rule)}
-.poster{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid var(--rule);align-items:center}
-.poster:nth-child(even) .pnum{order:2}
-.pnum{font-family:'Clash Display',sans-serif;font-weight:700;font-size:clamp(110px,16vw,230px);line-height:.9;letter-spacing:-6px;padding:34px 44px;color:transparent;-webkit-text-stroke:2.5px var(--ink);transition:color .3s}
-.poster:hover .pnum{color:var(--em);-webkit-text-stroke:0}
-.pnum sup{font-size:.35em;letter-spacing:-2px}
-.ptxt{padding:34px 44px;border-left:1px solid rgba(16,18,16,.2)}
-.poster:nth-child(even) .ptxt{border-left:none;border-right:1px solid rgba(16,18,16,.2);text-align:right}
-.ptxt h3{font-family:'Clash Display',sans-serif;font-size:26px;font-weight:600;margin-bottom:10px}
-.ptxt p{color:var(--ink-soft);font-size:16.5px;line-height:1.6;max-width:430px}
-.poster:nth-child(even) .ptxt p{margin-left:auto}
-.ptxt .mono-note{display:inline-block;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:2px;color:var(--em);border:1px solid var(--em);padding:6px 12px}
+/* ——— numbers ——— */
+.nums{background:#fff;border-top:1.5px solid var(--line);border-bottom:1.5px solid var(--line)}
+.nums-in{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.num{padding:66px 40px;text-align:center;border-left:1.5px solid var(--line)}
+.num:first-child{border-left:none}
+.num b{font-family:'Martian Mono',monospace;font-size:clamp(44px,5.5vw,68px);font-weight:700;letter-spacing:-3px;color:var(--ink);display:block;line-height:1}
+.num b em{font-style:normal;color:var(--em)}
+.num p{margin-top:14px;color:var(--soft);font-size:15px;line-height:1.55;max-width:260px;margin-left:auto;margin-right:auto}
+.num .u{display:inline-block;position:relative}
+.num .u::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:9px;background:rgba(255,107,53,.25);z-index:-1;border-radius:3px}
 
 /* ——— process ——— */
-.proc{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--rule);border-bottom:none}
-.pstep{padding:40px 36px 46px;border-right:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule);position:relative;overflow:hidden}
-.pstep:last-child{border-right:none}
-.pstep::before{content:attr(data-n);position:absolute;right:-8px;top:-26px;font-family:'Clash Display',sans-serif;font-size:120px;font-weight:700;color:rgba(16,18,16,.07)}
-.pstep h3{font-family:'Clash Display',sans-serif;font-size:26px;font-weight:600;margin-bottom:12px}
-.pstep p{color:var(--ink-soft);font-size:15.5px;line-height:1.6;max-width:320px}
-.pstep .t{display:inline-block;margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:2px;background:var(--ink);color:var(--paper);padding:6px 12px}
-.pstep:hover .t{background:var(--em)}
+.steps{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:0;margin-top:64px}
+.stp{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:34px 30px;text-align:left;position:relative}
+.stp .n{font-family:'Martian Mono',monospace;font-weight:700;font-size:13px;color:#fff;background:var(--ink);border-radius:9px;padding:7px 12px;display:inline-block}
+.stp h3{margin:18px 0 10px;font-size:17px;font-weight:600;letter-spacing:-.4px}
+.stp p{color:var(--soft);font-size:15px;line-height:1.6}
+.stp .tm{margin-top:16px;display:inline-block;font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--em-d);background:var(--mint2);border-radius:7px;padding:6px 11px}
+.arrow{display:flex;align-items:center;padding:0 8px}
+.arrow svg{width:56px;height:36px;overflow:visible}
+.arrow path{fill:none;stroke:var(--orange);stroke-width:3;stroke-linecap:round;stroke-dasharray:120;stroke-dashoffset:120}
+.arrow.on path{animation:draw .7s .2s ease-out forwards}
 
 /* ——— pricing ——— */
-.prices{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--rule)}
-.price-col{padding:44px 38px;border-right:1.5px solid var(--rule);display:flex;flex-direction:column}
-.price-col:last-child{border-right:none}
-.price-col.dark{background:var(--ink);color:var(--paper)}
-.price-col h3{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:3px;font-weight:500}
-.price-col .val{font-family:'Clash Display',sans-serif;font-size:52px;font-weight:700;margin:20px 0 2px;letter-spacing:-1.5px}
-.price-col .val small{font-size:19px;font-weight:500;letter-spacing:0}
-.price-col .per{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--ink-soft);margin-bottom:26px}
-.price-col.dark .per{color:rgba(242,239,231,.55)}
-.price-col ul{list-style:none;flex:1;margin-bottom:30px}
-.price-col li{padding:9px 0;font-size:15.5px;border-bottom:1px dashed rgba(16,18,16,.2);line-height:1.45}
-.price-col.dark li{border-color:rgba(242,239,231,.18)}
-.price-col li::before{content:"→ ";color:var(--em);font-weight:700}
-.price-col.dark li::before{color:var(--em-bright)}
-.pbtn{font-family:'Clash Display',sans-serif;font-weight:600;font-size:17px;text-align:center;padding:16px;border:1.5px solid var(--ink);transition:all .2s}
-.pbtn:hover{background:var(--ink);color:var(--paper)}
-.price-col.dark .pbtn{border-color:var(--em-bright);color:var(--em-bright)}
-.price-col.dark .pbtn:hover{background:var(--em-bright);color:var(--ink)}
-.price-note{margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:1.5px;color:var(--ink-soft);text-align:center}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:60px;align-items:stretch}
+.plan{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:36px 32px;text-align:left;display:flex;flex-direction:column;position:relative;transition:transform .25s}
+.plan:hover{transform:translateY(-6px)}
+.plan.mid{background:var(--ink);color:#fff;border-color:var(--ink)}
+.plan .pop{position:absolute;top:-15px;left:50%;transform:translateX(-50%) rotate(-2deg);background:var(--orange);color:#fff;font-weight:700;font-size:12.5px;padding:6px 16px;border-radius:20px;box-shadow:0 3px 0 #D9541F}
+.plan h3{font-size:15px;font-weight:600;letter-spacing:-.2px}
+.plan .pr{font-family:'Martian Mono',monospace;font-size:38px;font-weight:700;letter-spacing:-2px;margin:18px 0 2px}
+.plan .pr small{font-size:15px;font-weight:500;letter-spacing:0}
+.plan .per{font-family:'Martian Mono',monospace;font-size:10.5px;letter-spacing:1.5px;color:var(--soft);margin-bottom:24px}
+.plan.mid .per{color:rgba(255,255,255,.6)}
+.plan ul{list-style:none;flex:1;margin-bottom:28px}
+.plan li{padding:8px 0 8px 30px;position:relative;font-size:15px;line-height:1.5;color:var(--soft)}
+.plan.mid li{color:rgba(255,255,255,.85)}
+.plan li::before{content:"";position:absolute;left:3px;top:13px;width:13px;height:7px;border-left:2.5px solid var(--em);border-bottom:2.5px solid var(--em);transform:rotate(-45deg)}
+.plan .btn{justify-content:center}
+.plan .btn.o{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.plan .btn.o:hover{box-shadow:0 2px 0 var(--line)}
 
-/* ——— manifesto ——— */
-.mani{background:var(--paper2);border-top:1.5px solid var(--rule);border-bottom:1.5px solid var(--rule)}
-.mani-grid{display:grid;grid-template-columns:auto 1fr;gap:70px;align-items:center}
-.stamp{position:relative;width:230px;height:230px;display:flex;align-items:center;justify-content:center;transform:rotate(-7deg)}
-.stamp img{width:130px}
-.stamp svg{position:absolute;inset:0;animation:spin 26s linear infinite}
+/* ——— quote ——— */
+.quote{background:var(--mint2);border-radius:26px;padding:64px;display:grid;grid-template-columns:auto 1fr;gap:54px;align-items:center;margin-top:20px}
+.stamp{position:relative;width:190px;height:190px;display:flex;align-items:center;justify-content:center;transform:rotate(-6deg)}
+.stamp img{width:104px}
+.stamp svg{position:absolute;inset:0;animation:spin 24s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.mani blockquote{font-family:'Clash Display',sans-serif;font-size:clamp(26px,3vw,40px);font-weight:600;line-height:1.22;letter-spacing:-.5px}
-.mani blockquote em{font-style:normal;color:var(--em)}
-.mani .who{margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:2px;color:var(--ink-soft)}
+.quote blockquote{font-size:clamp(19px,2.2vw,26px);font-weight:500;line-height:1.5;letter-spacing:-.3px}
+.quote blockquote em{font-style:normal;background:linear-gradient(transparent 62%,rgba(16,185,129,.28) 62%)}
+.quote .who{margin-top:20px;font-family:'Martian Mono',monospace;font-size:12px;letter-spacing:1.5px;color:var(--soft)}
 
 /* ——— CTA ——— */
-.cta{padding:130px 0 120px}
-.cta h2{font-family:'Clash Display',sans-serif;font-size:clamp(52px,8vw,120px);font-weight:700;text-transform:uppercase;line-height:.95;letter-spacing:-2px}
-.cta h2 .out{color:transparent;-webkit-text-stroke:2px var(--ink)}
-.cta .row2{display:flex;align-items:center;justify-content:space-between;gap:40px;margin-top:48px;padding-top:30px;border-top:1.5px solid var(--rule);flex-wrap:wrap}
-.cta .sub{max-width:460px;color:var(--ink-soft);font-size:17px;line-height:1.6}
-.mailbtn{font-family:'JetBrains Mono',monospace;font-size:clamp(17px,2.2vw,26px);letter-spacing:1px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:16px;border-bottom:3px solid var(--em);padding-bottom:6px;transition:color .2s,gap .25s}
-.mailbtn:hover{color:var(--em);gap:26px}
+.cta-fin{text-align:center;padding:120px 0 130px;position:relative}
+.cta-fin h2{font-size:clamp(30px,4.2vw,52px);font-weight:600;letter-spacing:-1.5px;line-height:1.25}
+.cta-fin .tsub{margin-bottom:44px}
+.cta-arrow{position:absolute;left:50%;transform:translateX(140px) rotate(12deg);margin-top:8px}
+.cta-arrow svg{width:90px;height:70px;overflow:visible}
+.cta-arrow path{fill:none;stroke:var(--orange);stroke-width:3;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:220}
+.cta-arrow.on path{animation:draw .9s .3s ease-out forwards}
+.mail-note{margin-top:20px;font-family:'Martian Mono',monospace;font-size:12.5px;color:var(--soft);letter-spacing:.5px}
+.mail-note a{color:var(--em-d);font-weight:700;border-bottom:2px solid var(--orange)}
 
 /* ——— footer ——— */
-footer{background:var(--dark);color:#8B978F;overflow:hidden}
-.foot-top{display:flex;justify-content:space-between;padding:44px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;flex-wrap:wrap;gap:18px}
-.foot-top a:hover{color:var(--em-bright)}
-.foot-giant{font-family:'Clash Display',sans-serif;font-weight:700;font-size:clamp(80px,13.5vw,210px);line-height:.78;text-transform:uppercase;letter-spacing:-4px;color:transparent;-webkit-text-stroke:1.5px rgba(242,239,231,.25);text-align:center;transform:translateY(18%);user-select:none}
-.foot-giant i{font-style:normal;-webkit-text-stroke-color:rgba(16,185,129,.55)}
+footer{background:#fff;border-top:1.5px solid var(--line);padding:44px 0}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.foot-links{display:flex;gap:26px;color:var(--soft);font-size:14.5px}
+.foot-links a:hover{color:var(--em-d)}
+.copy{font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--soft)}
 
-@media(max-width:960px){
-  .rail{display:none}
-  .wrap{padding:0 22px}
-  .topnav{display:none}
-  .hero-foot{grid-template-columns:1fr;gap:26px}
-  .hero-cta{justify-self:start;align-items:flex-start}
-  .cols{grid-template-columns:1fr}
-  .col{border-right:none;border-bottom:1px solid rgba(16,18,16,.18)}
-  .monitor .wrap{grid-template-columns:1fr}
-  .lrow{grid-template-columns:60px 1fr;grid-template-rows:auto auto;row-gap:8px}
-  .ldesc{grid-column:2}.ltag{display:none}
-  .poster{grid-template-columns:1fr}
-  .poster:nth-child(even) .pnum{order:0}
-  .ptxt{border-left:none;text-align:left!important}
-  .proc,.prices{grid-template-columns:1fr}
-  .pstep,.price-col{border-right:none}
-  .mani-grid{grid-template-columns:1fr}
+@media(max-width:920px){
+  .nl{display:none}
+  .band .grid2{grid-template-columns:1fr}
+  .cards,.plans{grid-template-columns:1fr}
+  .nums-in{grid-template-columns:1fr}
+  .num{border-left:none;border-top:1.5px solid var(--line)}
+  .steps{grid-template-columns:1fr}
+  .arrow{display:none}
+  .quote{grid-template-columns:1fr;padding:40px;text-align:center}
+  .stamp{margin:0 auto}
+  .cta-arrow{display:none}
 }
 </style>
 </head>
 <body>
 
-<div class="rail l"><span>A8</span><span>B7</span><span>C6</span><span>D5</span><span>E4</span><span>F3</span><span>G2</span><span>H1</span></div>
-<div class="rail r"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span></div>
-
-<div class="top">
-  <div class="wrap top-in">
-    <a class="brand" href="#top">
-      <img src="knight.png" alt="">
+<nav>
+  <div class="wrap nav-in">
+    <a class="logo" href="#top">
+      <img src="knight.png" alt="ReiterWeb">
       <b>Reiter<i>Web</i></b>
     </a>
-    <div class="topnav">
-      <a href="#problems">PROBLEM</a>
-      <a href="#services">SERVICES</a>
-      <a href="#results">RESULTS</a>
-      <a href="#pricing">PRICING</a>
+    <div class="nl">
+      <a href="#how">How it works</a>
+      <a href="#services">Services</a>
+      <a href="#results">Results</a>
+      <a href="#pricing">Pricing</a>
     </div>
-    <a class="top-cta" href="#audit"><span class="dotp"></span>FREE AUDIT →</a>
+    <a class="btn" href="#audit">Free tracking audit</a>
   </div>
-</div>
+</nav>
 
 <header class="hero wrap" id="top">
-  <div class="overline">
-    <span class="st">TRACKING &amp; ANALYTICS ENGINEERING</span>
-    <span>EST. LODZ / EU — WORKING WORLDWIDE</span>
-  </div>
-  <h1>
-    <div class="row">Your ads are</div>
-    <div class="row">only as good <img class="inl" src="knight.png" alt=""></div>
-    <div class="row"><span class="out">as the data.</span></div>
-    <div class="row"><span class="grn">We fix the data.</span></div>
+  <div class="chip rv on"><span class="dot"></span>TRACKING &amp; ANALYTICS ENGINEERING · EU</div>
+  <h1 class="rv on dl1">Your ads are only as good as
+    <span class="circ">the data<svg viewBox="0 0 200 60" preserveAspectRatio="none"><path d="M8,32 C8,10 60,4 104,6 C158,8 194,16 192,32 C190,50 140,56 96,55 C48,54 8,48 8,34"/></svg></span>
+    feeding them. We
+    <span class="und">fix the data<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M4,9 C40,4 80,11 120,7 C150,4 180,8 196,6"/></svg></span>.
   </h1>
-  <div class="hero-foot">
-    <p class="man"><b>ReiterWeb is a tracking engineering studio.</b> We build and repair the measurement layer between your site and your ad platforms — GA4, server-side tagging, conversion APIs, consent. Built by engineers who read source code, not tag screenshots.</p>
-    <div class="sig">
-      115+ PROJECTS DELIVERED<br>
-      6,000+ ENGINEERING HOURS<br>
-      &lt;24H RESPONSE / EU-BASED
-    </div>
-    <div class="hero-cta">
-      <a class="bigbtn" href="#audit">Get a free audit <span>→</span></a>
-      <span class="microcta">NO CALL REQUIRED — SEND A LINK, GET FINDINGS</span>
-    </div>
+  <p class="sub rv on dl2">Server-side tracking, GA4 and attribution engineering for brands that spend real money on ads. We find where your conversions leak — and stop it.</p>
+  <div class="hero-cta rv on dl3">
+    <a class="btn big" href="#audit">Get a free audit →</a>
+    <a class="ghostlink" href="#how">See how it works</a>
+  </div>
+  <div class="trust rv on dl4">
+    <div class="avs"><span>🛒</span><span>📈</span><span>🎯</span><span>⚡</span></div>
+    <p><b>115+ projects delivered</b> · 6,000+ engineering hours · &lt;24h response</p>
   </div>
 </header>
 
 <div class="marq">
   <div class="marq-in">
-    <p><span>purchase <b class="ok">✓ verified</b></span><span>add_to_cart <b class="ok">✓ verified</b></span><span>begin_checkout <b class="ok">✓ verified</b></span><span>generate_lead <b class="ok">✓ verified</b></span><span>consent_update <b class="ok">✓ granted</b></span><span>event_id <b class="ok">✓ deduplicated</b></span><span>utm_source <b class="ok">✓ preserved</b></span><span>server_side <b class="ok">✓ first-party</b></span></p>
-    <p><span>purchase <b class="ok">✓ verified</b></span><span>add_to_cart <b class="ok">✓ verified</b></span><span>begin_checkout <b class="ok">✓ verified</b></span><span>generate_lead <b class="ok">✓ verified</b></span><span>consent_update <b class="ok">✓ granted</b></span><span>event_id <b class="ok">✓ deduplicated</b></span><span>utm_source <b class="ok">✓ preserved</b></span><span>server_side <b class="ok">✓ first-party</b></span></p>
-  </div>
-</div>
-
-<section id="problems">
-  <div class="wrap">
-    <div class="sec-head"><h2>The silent budget leak</h2><span class="idx">SEC. 01 — PROBLEM</span></div>
-    <div class="colwrap cols">
-      <div class="col">
-        <div class="n">01</div>
-        <h3>Numbers that never match</h3>
-        <p>GA4 says one thing, Ads Manager another, Shopify a third. Nobody trusts the reports — so decisions run on gut feeling, and gut feeling doesn't scale.</p>
-      </div>
-      <div class="col">
-        <div class="n">02</div>
-        <h3>Conversions eaten by consent</h3>
-        <p>A misconfigured Consent Mode silently drops 15–40% of EU conversions. Your ROAS looks worse than reality, and platforms optimize on starved data.</p>
-      </div>
-      <div class="col">
-        <div class="n">03</div>
-        <h3>Attribution black holes</h3>
-        <p>Half your orders arrive "unattributed". Scaling ad budget without knowing which channel drives revenue isn't marketing — it's gambling.</p>
-      </div>
+    <div class="mi">
+      <img src="https://cdn.simpleicons.org/googleanalytics/16241E" alt="GA4">
+      <img src="https://cdn.simpleicons.org/googletagmanager/16241E" alt="GTM">
+      <img src="https://cdn.simpleicons.org/googleads/16241E" alt="Google Ads">
+      <img src="https://cdn.simpleicons.org/meta/16241E" alt="Meta">
+      <img src="https://cdn.simpleicons.org/shopify/16241E" alt="Shopify">
+      <img src="https://cdn.simpleicons.org/woocommerce/16241E" alt="WooCommerce">
+      <img src="https://cdn.simpleicons.org/googlebigquery/16241E" alt="BigQuery">
+      <img src="https://cdn.simpleicons.org/looker/16241E" alt="Looker">
+      <img src="https://cdn.simpleicons.org/tiktok/16241E" alt="TikTok">
+      <img src="https://cdn.simpleicons.org/googlecloud/16241E" alt="GCP">
     </div>
-  </div>
-</section>
-
-<div class="monitor">
-  <div class="wrap">
-    <div class="mon-frame">
-      <video autoplay muted loop playsinline>
-        <source src="flow.mp4" type="video/mp4">
-      </video>
-      <div class="mon-cap"><span>FIG. 1 — EVENT DELIVERY, LIVE</span><span>SITE → sGTM → PLATFORMS</span></div>
-    </div>
-    <div>
-      <h2>Every event.<br>Every platform.<br><em>Verified.</em></h2>
-      <p class="lead">We route your conversions through a first-party, server-side layer and verify delivery end to end — so Google and Meta optimize on complete, deduplicated, consent-clean data.</p>
-      <div class="loglines">
-        <div>$ audit --site yourstore.com</div>
-        <div><span class="warn">⚠ found:</span> duplicate GTM container</div>
-        <div><span class="warn">⚠ found:</span> purchase fires twice on reload</div>
-        <div><span class="warn">⚠ found:</span> consent default blocks EU hits</div>
-        <div><b>✓ fixed:</b> −60% event duplication</div>
-        <div><b>✓ fixed:</b> +31% conversions restored</div>
-      </div>
+    <div class="mi">
+      <img src="https://cdn.simpleicons.org/googleanalytics/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/googletagmanager/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/googleads/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/meta/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/shopify/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/woocommerce/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/googlebigquery/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/looker/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/tiktok/16241E" alt="">
+      <img src="https://cdn.simpleicons.org/googlecloud/16241E" alt="">
     </div>
   </div>
 </div>
 
-<section id="services">
+<div class="band" id="how">
   <div class="wrap">
-    <div class="sec-head"><h2>What we build</h2><span class="idx">SEC. 02 — SERVICES</span></div>
-    <div class="ledger">
-      <div class="lrow">
-        <span class="lnum">S/01</span>
-        <span class="lname">GA4 + GTM engineering</span>
-        <span class="ldesc">Event architecture, ecommerce funnels, dataLayer design, custom dimensions, cross-domain — built to survive redesigns and plugin updates.</span>
-        <span class="ltag">MEASUREMENT</span>
+    <span class="kick" style="color:#CFF5E6">HOW IT WORKS</span>
+    <div class="grid2">
+      <div class="rv">
+        <h2>Every event. Every platform. <mark>Verified.</mark></h2>
+        <p class="lead">We route your conversions through a first-party, server-side layer and verify delivery end to end — so Google and Meta optimize on complete, deduplicated, consent-clean data.</p>
+        <div class="checkrow">
+          <div><span class="c">✓</span>One purchase = one event — deduplicated across GA4, Ads and Meta</div>
+          <div><span class="c">✓</span>Consent Mode v2 configured so EU conversions stop vanishing</div>
+          <div><span class="c">✓</span>First-party cookies through your own subdomain — longer attribution</div>
+        </div>
       </div>
-      <div class="lrow">
-        <span class="lnum">S/02</span>
-        <span class="lname">Server-side tagging</span>
-        <span class="ldesc">First-party tracking through your own subdomain on Stape or Google Cloud: cleaner data, longer cookies, stronger attribution.</span>
-        <span class="ltag">INFRASTRUCTURE</span>
+      <div class="vidcard rv dl2">
+        <video autoplay muted loop playsinline>
+          <source src="flow.mp4" type="video/mp4">
+        </video>
+        <div class="cap"><span>EVENT DELIVERY — LIVE</span><span>SITE → sGTM → PLATFORMS</span></div>
       </div>
-      <div class="lrow">
-        <span class="lnum">S/03</span>
-        <span class="lname">Conversion APIs</span>
-        <span class="ldesc">Meta CAPI, Google enhanced conversions, LinkedIn &amp; Reddit — with event_id deduplication and event-quality checks that actually pass.</span>
-        <span class="ltag">SIGNALS</span>
+    </div>
+  </div>
+</div>
+
+<section class="pad center" id="services">
+  <div class="wrap">
+    <span class="kick rv">SERVICES</span>
+    <h2 class="t rv dl1">Everything between your site<br>and your ad platforms</h2>
+    <div class="cards">
+      <div class="card rv"><span class="corner">S/01</span>
+        <div class="ico">📐</div>
+        <h3>GA4 + GTM engineering</h3>
+        <p>Event architecture, ecommerce funnels, dataLayer design, custom dimensions — built to survive redesigns.</p>
       </div>
-      <div class="lrow">
-        <span class="lnum">S/04</span>
-        <span class="lname">Consent Mode v2 / GDPR</span>
-        <span class="ldesc">Cookiebot, OneTrust, custom banners — compliant setups that stop throwing your EU conversions away.</span>
-        <span class="ltag">COMPLIANCE</span>
+      <div class="card rv dl1"><span class="corner">S/02</span>
+        <div class="ico">🖥️</div>
+        <h3>Server-side tagging</h3>
+        <p>First-party tracking via your own subdomain on Stape or Google Cloud: cleaner data, stronger attribution.</p>
       </div>
-      <div class="lrow">
-        <span class="lnum">S/05</span>
-        <span class="lname">Ecommerce platforms</span>
-        <span class="ldesc">Shopify — including checkout extensibility and webhooks — WooCommerce, Webflow, Framer, and custom JavaScript stacks.</span>
-        <span class="ltag">PLATFORMS</span>
+      <div class="card rv dl2"><span class="corner">S/03</span>
+        <div class="ico">🔁</div>
+        <h3>Conversion APIs</h3>
+        <p>Meta CAPI, Google enhanced conversions, LinkedIn &amp; Reddit — with event_id dedup that actually passes checks.</p>
       </div>
-      <div class="lrow">
-        <span class="lnum">S/06</span>
-        <span class="lname">Reporting that gets opened</span>
-        <span class="ldesc">Looker Studio dashboards your team actually uses: revenue, channels and funnels in one place, updated live.</span>
-        <span class="ltag">REPORTING</span>
+      <div class="card rv"><span class="corner">S/04</span>
+        <div class="ico">🛡️</div>
+        <h3>Consent Mode v2 / GDPR</h3>
+        <p>Cookiebot, OneTrust, custom banners — compliant setups that stop throwing EU conversions away.</p>
+      </div>
+      <div class="card rv dl1"><span class="corner">S/05</span>
+        <div class="ico">🛒</div>
+        <h3>Ecommerce platforms</h3>
+        <p>Shopify (checkout extensibility, webhooks), WooCommerce, Webflow, Framer and custom JavaScript stacks.</p>
+      </div>
+      <div class="card rv dl2"><span class="corner">S/06</span>
+        <div class="ico">📊</div>
+        <h3>Reporting that gets opened</h3>
+        <p>Looker Studio dashboards your team actually uses — revenue, channels and funnels in one place, live.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="results">
-  <div class="wrap">
-    <div class="sec-head"><h2>Paid for — and kept</h2><span class="idx">SEC. 03 — RESULTS</span></div>
-    <div class="posters">
-      <div class="poster">
-        <div class="pnum">40<sup>%</sup></div>
-        <div class="ptxt">
-          <h3>Conversions recovered</h3>
-          <p>After fixing Consent Mode misconfiguration on EU traffic, recovered conversions the platforms never saw — the cheapest ROAS lift you'll ever get.</p>
-          <span class="mono-note">CONSENT MODE V2 · EU TRAFFIC</span>
-        </div>
-      </div>
-      <div class="poster">
-        <div class="pnum">−60<sup>%</sup></div>
-        <div class="ptxt">
-          <h3>Event duplication removed</h3>
-          <p>Clean dataLayer architecture on ecommerce funnels: one purchase, one event, one truth across GA4, Ads and Meta.</p>
-          <span class="mono-note">DATALAYER REBUILD · ECOM</span>
-        </div>
-      </div>
-      <div class="poster">
-        <div class="pnum">−35<sup>%</sup></div>
-        <div class="ptxt">
-          <h3>Tag load time cut</h3>
-          <p>Vendor pixels moved server-side: faster pages, same signals. Your Core Web Vitals will send a thank-you note.</p>
-          <span class="mono-note">SERVER-SIDE MIGRATION</span>
-        </div>
-      </div>
-    </div>
+<div class="nums" id="results">
+  <div class="wrap nums-in">
+    <div class="num rv"><b><em class="cnt" data-to="40">0</em><em>%</em></b><p>of <span class="u">lost conversions recovered</span> after fixing Consent Mode on EU traffic</p></div>
+    <div class="num rv dl1"><b>−<em class="cnt" data-to="60">0</em><em>%</em></b><p>GA4 event duplication removed with clean dataLayer architecture</p></div>
+    <div class="num rv dl2"><b>−<em class="cnt" data-to="35">0</em><em>%</em></b><p>tag load time after moving vendor pixels server-side</p></div>
   </div>
-</section>
+</div>
 
-<section id="process">
+<section class="pad center" id="process">
   <div class="wrap">
-    <div class="sec-head"><h2>Diagnosis before invoice</h2><span class="idx">SEC. 04 — PROCESS</span></div>
-    <div style="height:34px"></div>
-    <div class="proc">
-      <div class="pstep" data-n="01">
+    <span class="kick rv">PROCESS</span>
+    <h2 class="t rv dl1">Diagnosis before invoice</h2>
+    <p class="tsub rv dl2">You don't commit to anything before you know exactly what's broken and what it takes to fix.</p>
+    <div class="steps">
+      <div class="stp rv"><span class="n">01</span>
         <h3>Audit</h3>
-        <p>Send your site and ad platforms. We map the funnel, read the source, and deliver a written findings doc with priorities.</p>
-        <span class="t">2–4 DAYS</span>
+        <p>Send your site and ad platforms. We map the funnel, read the source, and deliver a written findings doc.</p>
+        <span class="tm">2–4 DAYS</span>
       </div>
-      <div class="pstep" data-n="02">
+      <div class="arrow"><svg viewBox="0 0 56 36"><path d="M2,28 C18,8 34,8 46,16 M40,8 L48,17 L37,20"/></svg></div>
+      <div class="stp rv dl1"><span class="n">02</span>
         <h3>Fix &amp; build</h3>
-        <p>Rebuild what's broken, build what's missing: tags, dataLayer, server-side, consent — verified end to end in DebugView.</p>
-        <span class="t">1–3 WEEKS</span>
+        <p>Rebuild what's broken, build what's missing — verified end to end in DebugView before handover.</p>
+        <span class="tm">1–3 WEEKS</span>
       </div>
-      <div class="pstep" data-n="03">
+      <div class="arrow"><svg viewBox="0 0 56 36"><path d="M2,28 C18,8 34,8 46,16 M40,8 L48,17 L37,20"/></svg></div>
+      <div class="stp rv dl2"><span class="n">03</span>
         <h3>Monitor</h3>
-        <p>We stay as your tracking team — catching degradation before it costs money, adapting to platform changes.</p>
-        <span class="t">ONGOING</span>
+        <p>We stay as your tracking team — catching degradation before it costs money.</p>
+        <span class="tm">ONGOING</span>
       </div>
     </div>
   </div>
 </section>
 
-<section id="pricing">
+<section class="pad center" id="pricing" style="padding-top:40px">
   <div class="wrap">
-    <div class="sec-head"><h2>Fixed scope, fixed price</h2><span class="idx">SEC. 05 — PRICING</span></div>
-    <div style="height:34px"></div>
-    <div class="prices">
-      <div class="price-col">
-        <h3>TRACKING AUDIT</h3>
-        <div class="val">from $750</div>
+    <span class="kick rv">PRICING</span>
+    <h2 class="t rv dl1">Fixed scope. Fixed price.<br>No surprises.</h2>
+    <div class="plans">
+      <div class="plan rv">
+        <h3>Tracking Audit</h3>
+        <div class="pr">from $750</div>
         <div class="per">ONE-TIME · 2–4 DAYS</div>
         <ul>
           <li>Full GA4 + GTM + pixels review</li>
@@ -419,11 +373,12 @@ footer{background:var(--dark);color:#8B978F;overflow:hidden}
           <li>Written findings doc with priorities</li>
           <li>Fix-it-yourself or hire-us — your call</li>
         </ul>
-        <a class="pbtn" href="#audit">Start with an audit</a>
+        <a class="btn o" href="#audit">Start with an audit</a>
       </div>
-      <div class="price-col dark">
-        <h3 style="color:#10B981">REBUILD &amp; FIX ★</h3>
-        <div class="val">from $1,500</div>
+      <div class="plan mid rv dl1">
+        <span class="pop">Most popular</span>
+        <h3 style="color:#7DE8C3">Rebuild &amp; Fix</h3>
+        <div class="pr">from $1,500</div>
         <div class="per">PROJECT · 1–3 WEEKS</div>
         <ul>
           <li>Everything in Audit</li>
@@ -432,11 +387,11 @@ footer{background:var(--dark);color:#8B978F;overflow:hidden}
           <li>Consent Mode v2 done right</li>
           <li>Verified conversions, documented setup</li>
         </ul>
-        <a class="pbtn" href="#audit">Fix my tracking</a>
+        <a class="btn" href="#audit">Fix my tracking</a>
       </div>
-      <div class="price-col">
-        <h3>RETAINER</h3>
-        <div class="val">from $800<small>/mo</small></div>
+      <div class="plan rv dl2">
+        <h3>Tracking Retainer</h3>
+        <div class="pr">from $800<small>/mo</small></div>
         <div class="per">MONTHLY · CANCEL ANYTIME</div>
         <ul>
           <li>Your on-call tracking team</li>
@@ -444,49 +399,83 @@ footer{background:var(--dark);color:#8B978F;overflow:hidden}
           <li>New campaigns wired for tracking</li>
           <li>Platform-change adaptations</li>
         </ul>
-        <a class="pbtn" href="#audit">Talk retainer</a>
+        <a class="btn o" href="#audit">Talk retainer</a>
       </div>
     </div>
-    <div class="price-note">EVERY ENGAGEMENT STARTS WITH THE FREE MINI-AUDIT BELOW — SO YOU BUY FIXES, NOT PROMISES</div>
   </div>
 </section>
 
-<div class="mani">
-  <section style="padding:90px 0">
-  <div class="wrap mani-grid">
+<section class="pad" style="padding-top:30px">
+  <div class="wrap">
+    <div class="quote rv">
       <div class="stamp">
-        <svg viewBox="0 0 230 230">
-          <defs><path id="circ" d="M115,115 m-98,0 a98,98 0 1,1 196,0 a98,98 0 1,1 -196,0"/></defs>
-          <text style="font-family:'JetBrains Mono',monospace;font-size:13.5px;letter-spacing:3.5px;fill:#101210">
-            <textPath href="#circ">REITERWEB · TRACKING ENGINEERING · EST. LODZ EU ·</textPath>
+        <svg viewBox="0 0 190 190">
+          <defs><path id="circ2" d="M95,95 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>
+          <text style="font-family:'Martian Mono',monospace;font-size:11.5px;letter-spacing:3px;fill:#16241E">
+            <textPath href="#circ2">REITERWEB · TRACKING ENGINEERING · EST. LODZ EU ·</textPath>
           </text>
         </svg>
         <img src="knight.png" alt="">
       </div>
       <div>
         <blockquote>"Most agencies sell you dashboards. We make sure the <em>numbers inside them are true</em> — everything else is decoration."</blockquote>
-        <div class="who">ARTEM R. — FOUNDER, TRACKING ENGINEER · 115+ PROJECTS · DEV BACKGROUND</div>
+        <div class="who">ARTEM R. — FOUNDER · TRACKING ENGINEER · DEV BACKGROUND</div>
       </div>
-  </div>
-  </section>
-</div>
-
-<section class="cta wrap" id="audit">
-  <h2>Send us <span class="out">your site.</span><br>We'll tell you what's <span style="color:var(--em)">broken.</span></h2>
-  <div class="row2">
-    <p class="sub">Your site + your ad platforms + your tracking goal. We map the funnel and reply with exactly what needs fixing — before you pay for anything.</p>
-    <a class="mailbtn" href="mailto:hello@reiterweb.com?subject=Free%20tracking%20audit">hello@reiterweb.com <span>→</span></a>
+    </div>
   </div>
 </section>
 
-<footer>
-  <div class="foot-top">
-    <span>© 2026 REITERWEB — LODZ, PL</span>
-    <span><a href="#services">SERVICES</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="#pricing">PRICING</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="mailto:hello@reiterweb.com">CONTACT</a></span>
-    <span>GA4 · SGTM · CAPI · CONSENT</span>
+<section class="cta-fin wrap" id="audit">
+  <span class="kick rv">FREE MINI-AUDIT</span>
+  <h2 class="rv dl1">Send us your site.<br>We'll tell you what's broken —<br>before you pay for anything.</h2>
+  <p class="tsub rv dl2">Your site + your ad platforms + your tracking goal. We reply with exactly what needs fixing.</p>
+  <div class="rv dl3">
+    <a class="btn big" href="mailto:hello@reiterweb.com?subject=Free%20tracking%20audit">Get my free audit →</a>
+    <div class="cta-arrow"><svg viewBox="0 0 90 70"><path d="M78,6 C58,26 40,40 14,50 M26,54 L10,52 L16,38"/></svg></div>
   </div>
-  <div class="foot-giant">Reiter<i>Web</i></div>
+  <p class="mail-note rv dl4">or write to <a href="mailto:hello@reiterweb.com">hello@reiterweb.com</a> — response within 24h</p>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a class="logo" href="#top">
+      <img src="knight.png" alt="">
+      <b style="font-size:16px">Reiter<i>Web</i></b>
+    </a>
+    <div class="foot-links">
+      <a href="#services">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="mailto:hello@reiterweb.com">Contact</a>
+    </div>
+    <div class="copy">© 2026 REITERWEB · LODZ, PL · GA4 / SGTM / CAPI / CONSENT</div>
+  </div>
 </footer>
 
+<script>
+// scroll reveal
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+}), { threshold: 0.18 });
+document.querySelectorAll('.rv:not(.on)').forEach(el => io.observe(el));
+document.querySelectorAll('.arrow, .cta-arrow').forEach(el => {
+  const o = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('on'); o.unobserve(e.target); }
+  }), { threshold: 0.5 });
+  o.observe(el);
+});
+// count-up
+const co = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  const el = e.target, to = +el.dataset.to, t0 = performance.now();
+  const tick = now => {
+    const p = Math.min((now - t0) / 1200, 1);
+    el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  co.unobserve(el);
+}), { threshold: 0.6 });
+document.querySelectorAll('.cnt').forEach(el => co.observe(el));
+</script>
 </body>
 </html>
