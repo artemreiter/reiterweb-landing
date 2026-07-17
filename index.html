@@ -143,12 +143,30 @@ h1 .em-line svg line{stroke:var(--em);stroke-width:1.5}
 .js .pipeline .led-d{animation:led 2s infinite}
 @keyframes led{50%{opacity:.25}}
 
-/* ——— stack strip ——— */
+/* ——— stack strip (marquee) ——— */
 .stack{border-block:1px solid var(--line);margin-top:64px;background:oklch(0.99 0.003 170)}
-.stack-in{display:flex;align-items:center;gap:clamp(20px,3.4vw,44px);padding:18px 0;flex-wrap:wrap}
-.stack-in .lbl{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--mut)}
-.stack-in img{height:22px;opacity:.55;filter:grayscale(1);transition:opacity .2s ease-out,filter .2s ease-out}
-.stack-in img:hover{opacity:1;filter:none}
+.stack .wrap{display:flex;align-items:center;gap:clamp(18px,2.4vw,30px)}
+.stack .lbl{font-family:'Spline Sans Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--mut);white-space:nowrap;flex:none}
+.stack-mq{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.stack-track{display:flex;width:max-content;animation:stackmq 48s linear infinite}
+.stack-mq:hover .stack-track{animation-play-state:paused}
+.stack-grp{display:flex;align-items:center;gap:clamp(30px,3.4vw,46px);padding:17px clamp(30px,3.4vw,46px) 17px 0}
+.stack-it{display:flex;align-items:center;gap:10px;white-space:nowrap}
+.stack-it img{height:19px;width:auto;opacity:.6;filter:grayscale(1);transition:opacity .2s ease-out,filter .2s ease-out}
+.stack-it span{font-family:'Spline Sans Mono',monospace;font-size:11.5px;letter-spacing:.07em;color:var(--mut)}
+.stack-it:hover img{opacity:1;filter:none}
+@keyframes stackmq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){
+  .stack-track{animation:none;width:auto;flex-wrap:wrap}
+  .stack-grp+.stack-grp{display:none}
+  .stack-mq{mask-image:none;-webkit-mask-image:none}
+}
+@media (max-width:640px){
+  .stack .wrap{flex-direction:column;align-items:flex-start;gap:0}
+  .stack .lbl{padding-top:13px}
+  .stack-mq{width:100%}
+  .stack-grp{padding-block:12px}
+}
 
 /* ——— symptoms: specimen rows ——— */
 .sym-sec{padding:104px 0 96px}
@@ -300,6 +318,23 @@ h1 .em-line svg line{stroke:var(--em);stroke-width:1.5}
 .cta-fin h2{font-stretch:118%;font-weight:800;font-size:clamp(32px,4.4vw,58px);letter-spacing:-.015em;line-height:1.08}
 .cta-fin .sub{margin-top:22px;color:var(--mut-d);font-size:17px;max-width:52ch}
 .cta-fin .sub b{color:var(--txt-l);font-weight:600}
+/* ——— lead form ——— */
+.lead-form{display:flex;flex-direction:column;gap:14px}
+.lead-form label{display:flex;flex-direction:column;gap:7px}
+.lead-form .fl{font-family:'Spline Sans Mono',monospace;font-size:10.5px;letter-spacing:.12em;color:var(--mut-d)}
+.lead-form .fl i{font-style:normal;letter-spacing:.04em;opacity:.75}
+.lead-form input,.lead-form textarea{background:oklch(0.275 0.03 262);border:1px solid oklch(0.4 0.025 255);color:var(--txt-l);font:inherit;font-size:15px;padding:12px 14px;width:100%}
+.lead-form ::placeholder{color:oklch(0.66 0.02 250);opacity:1}
+.lead-form input:focus-visible,.lead-form textarea:focus-visible{outline:2px solid var(--em);outline-offset:-1px}
+.lead-form textarea{resize:vertical;min-height:76px}
+.lead-form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.lead-form .btn{justify-content:center;font-size:16.5px;padding:18px 30px}
+.lead-form .btn:disabled{opacity:.6;cursor:default}
+.form-status{display:none;font-family:'Spline Sans Mono',monospace;font-size:12.5px;line-height:1.55;margin:0}
+.form-status.err{display:block;color:oklch(0.8 0.11 25)}
+.lead-done{border:1px solid oklch(0.4 0.025 255);padding:26px 24px}
+.lead-done b{display:block;font-family:'Spline Sans Mono',monospace;font-size:13px;letter-spacing:.12em;color:var(--em)}
+.lead-done p{margin:10px 0 0;color:var(--mut-d);font-size:15px;line-height:1.6}
 .cta-side{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
 .mail-note{font-family:'Spline Sans Mono',monospace;font-size:12px;letter-spacing:.04em;color:var(--mut-d)}
 .mail-note a{color:var(--em);border-bottom:1px solid var(--em)}
@@ -495,18 +530,89 @@ footer{background:var(--ink);color:var(--mut-d);border-top:1px solid var(--line-
   </div>
 </section>
 
-<div class="stack" aria-label="Platforms we work with">
-  <div class="wrap stack-in">
+<div class="stack" aria-label="Platforms and tools we work with">
+  <div class="wrap">
     <span class="lbl">WORKS WITH</span>
-    <img src="https://cdn.simpleicons.org/googleanalytics/0F172A" alt="Google Analytics 4" loading="lazy">
-    <img src="https://cdn.simpleicons.org/googletagmanager/0F172A" alt="Google Tag Manager" loading="lazy">
-    <img src="https://cdn.simpleicons.org/googleads/0F172A" alt="Google Ads" loading="lazy">
-    <img src="https://cdn.simpleicons.org/meta/0F172A" alt="Meta" loading="lazy">
-    <img src="https://cdn.simpleicons.org/shopify/0F172A" alt="Shopify" loading="lazy">
-    <img src="https://cdn.simpleicons.org/woocommerce/0F172A" alt="WooCommerce" loading="lazy">
-    <img src="https://cdn.simpleicons.org/googlebigquery/0F172A" alt="BigQuery" loading="lazy">
-    <img src="https://cdn.simpleicons.org/looker/0F172A" alt="Looker Studio" loading="lazy">
-    <img src="https://cdn.simpleicons.org/tiktok/0F172A" alt="TikTok" loading="lazy">
+    <div class="stack-mq">
+      <div class="stack-track">
+        <div class="stack-grp">
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googleanalytics/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>GA4</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googletagmanager/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>GOOGLE TAG MANAGER</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googleads/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>GOOGLE ADS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/meta/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>META ADS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/tiktok/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>TIKTOK ADS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/shopify/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>SHOPIFY</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/woocommerce/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>WOOCOMMERCE</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googlebigquery/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>BIGQUERY</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/looker/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>LOOKER STUDIO</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/stripe/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>STRIPE</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/hubspot/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>HUBSPOT</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/webflow/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>WEBFLOW</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/wordpress/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>WORDPRESS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googlesearchconsole/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>SEARCH CONSOLE</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/firebase/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>FIREBASE</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/pinterest/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>PINTEREST ADS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/snapchat/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>SNAP PIXEL</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/zapier/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>ZAPIER</span></span>
+        </div>
+        <div class="stack-grp" aria-hidden="true">
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googleanalytics/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>GA4</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googletagmanager/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>GOOGLE TAG MANAGER</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googleads/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>GOOGLE ADS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/meta/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>META ADS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/tiktok/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>TIKTOK ADS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/shopify/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>SHOPIFY</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/woocommerce/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>WOOCOMMERCE</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googlebigquery/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>BIGQUERY</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/looker/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>LOOKER STUDIO</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/stripe/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>STRIPE</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/hubspot/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>HUBSPOT</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/webflow/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>WEBFLOW</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/wordpress/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>WORDPRESS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/googlesearchconsole/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>SEARCH CONSOLE</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/firebase/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>FIREBASE</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/pinterest/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>PINTEREST ADS</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/snapchat/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>SNAP PIXEL</span></span>
+      <span class="stack-it"><img src="https://cdn.simpleicons.org/zapier/0F172A" alt="" loading="lazy" width="19" height="19">
+        <span>ZAPIER</span></span>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -796,8 +902,21 @@ footer{background:var(--ink);color:var(--mut-d);border-top:1px solid var(--line-
       <p class="sub">One email: your site + where you run ads. We reply within 24 hours with a findings list. <b>Not a sales pitch, no call required.</b></p>
     </div>
     <div class="cta-side rv dl1">
-      <a class="btn em" href="mailto:hello@reiterweb.com?subject=Free%20tracking%20audit" style="font-size:17px;padding:19px 34px">Get my free audit →</a>
-      <p class="mail-note">or write to <a href="mailto:hello@reiterweb.com">hello@reiterweb.com</a><br>worst case, you learn your tracking is fine</p>
+      <form class="lead-form" id="lead-form" method="post" action="/api/lead" novalidate>
+        <label><span class="fl">YOUR SITE</span>
+          <input name="site" type="text" inputmode="url" autocomplete="url" placeholder="yourstore.com" required>
+        </label>
+        <label><span class="fl">WORK EMAIL</span>
+          <input name="email" type="email" autocomplete="email" placeholder="you@company.com" required>
+        </label>
+        <label><span class="fl">WHAT LOOKS OFF <i>· OPTIONAL</i></span>
+          <textarea name="message" rows="3" placeholder="GA4 says 190 purchases, Shopify says 240…"></textarea>
+        </label>
+        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button class="btn em" type="submit">Get my free audit →</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+        <p class="mail-note">or write to <a href="mailto:artem@reiterweb.com">artem@reiterweb.com</a><br>worst case, you learn your tracking is fine</p>
+      </form>
     </div>
   </div>
 </section>
@@ -812,7 +931,7 @@ footer{background:var(--ink);color:var(--mut-d);border-top:1px solid var(--line-
     <nav class="foot-links" aria-label="Footer">
       <a href="#services">Services</a>
       <a href="#pricing">Pricing</a>
-      <a href="mailto:hello@reiterweb.com">Contact</a>
+      <a href="mailto:artem@reiterweb.com">Contact</a>
     </nav>
     <div class="copy">© 2026 REITERWEB · LODZ, PL · GA4 / SGTM / CAPI / CONSENT</div>
   </div>
@@ -974,6 +1093,30 @@ if (!reduced) {
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
+})();
+</script>
+<script>
+(function(){
+  var f=document.getElementById('lead-form');if(!f)return;
+  var st=f.querySelector('.form-status');
+  function show(m){st.textContent=m;st.className='form-status err'}
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    st.className='form-status';st.textContent='';
+    var btn=f.querySelector('button[type=submit]');
+    var d={site:f.site.value.trim(),email:f.email.value.trim(),message:f.message.value.trim(),company:f.company.value};
+    if(!d.site){show('Add your site — that\u2019s what we audit.');f.site.focus();return}
+    if(!/^\S+@\S+\.\S{2,}$/.test(d.email)){show('Enter a valid work email so the findings can reach you.');f.email.focus();return}
+    btn.disabled=true;btn.textContent='Sending\u2026';
+    fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+      .then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok&&j.ok,j:j}})})
+      .then(function(r){
+        if(r.ok){f.innerHTML='<div class="lead-done"><b>\u2713 REQUEST LOGGED</b><p>Findings list lands in your inbox within 24 hours. No sales pitch, no call.</p></div>'}
+        else{fail(r.j&&r.j.error)}
+      })
+      .catch(function(){fail()});
+    function fail(msg){btn.disabled=false;btn.textContent='Get my free audit \u2192';show((msg||'Could not send right now')+' \u2014 or email artem@reiterweb.com directly.')}
+  });
 })();
 </script>
 </body>
